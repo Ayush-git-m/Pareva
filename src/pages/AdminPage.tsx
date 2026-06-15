@@ -67,7 +67,7 @@ export default function AdminPage() {
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    if (adminId === 'Shri Pareva' && adminPassword === 'ShriPareva@123') {
+    if (adminId === 'Shree Pareva' && adminPassword === 'ShreePareva@123') {
       setIsAuthenticated(true);
       sessionStorage.setItem('adminAuth', 'true');
       setError('');
