@@ -1,0 +1,24 @@
+{
+  "entities": {
+    "Jewelry": {
+      "title": "Jewelry Item",
+      "description": "A single piece of jewelry for sale or display.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "collectionId": { "type": "string" },
+        "imageUrl": { "type": "string" },
+        "price": { "type": "number", "description": "Optional price" },
+        "createdAt": { "type": "number" }
+      },
+      "required": ["title", "description", "collectionId", "imageUrl", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/jewelries/{jewelryId}": {
+      "schema": "Jewelry",
+      "description": "Stores individual jewelry items."
+    }
+  }
+}

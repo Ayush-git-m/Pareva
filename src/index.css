@@ -1,0 +1,78 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..700;1,400..700&family=Poppins:ital,wght@0,300..600;1,300..600&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #890051;
+  --color-primary-fixed: #ffd9e5;
+  --color-on-primary-fixed: #3e0022;
+  --color-on-primary-fixed-variant: #8c0053;
+  --color-on-primary: #ffffff;
+  --color-primary-container: #b0126b;
+  --color-on-primary-container: #ffc6d9;
+
+  --color-secondary: #a43366;
+  --color-on-secondary: #ffffff;
+  --color-secondary-container: #fe7aae;
+  --color-on-secondary-container: #760842;
+
+  --color-surface: #fff8f8;
+  --color-on-surface: #26171e;
+  --color-on-surface-variant: #574148;
+  --color-surface-variant: #f7dbe5;
+  --color-surface-container-low: #fff0f4;
+  --color-inverse-surface: #3d2c33;
+  --color-inverse-on-surface: #ffecf1;
+  --color-outline: #8b7079;
+  --color-outline-variant: #debec8;
+
+  --color-luxury-gold: #D4AF37;
+  --color-deep-burgundy: #14070D;
+
+  --spacing-container-max: 1280px;
+  --spacing-gutter: 24px;
+  --spacing-section-padding-desktop: 80px;
+}
+
+@utility font-headline-md { font-family: 'Playfair Display', serif; }
+@utility font-label-lg { font-family: 'Poppins', sans-serif; }
+@utility font-headline-lg { font-family: 'Playfair Display', serif; }
+@utility font-display-lg { font-family: 'Playfair Display', serif; }
+@utility font-body-md { font-family: 'Poppins', sans-serif; }
+@utility font-body-lg { font-family: 'Poppins', sans-serif; }
+
+@utility text-headline-md { font-size: 32px; line-height: 40px; font-weight: 500; font-family: 'Playfair Display', serif;}
+@utility text-label-lg { font-size: 14px; line-height: 20px; letter-spacing: 0.1em; font-weight: 600; font-family: 'Poppins', sans-serif;}
+@utility text-headline-lg { font-size: 40px; line-height: 48px; font-weight: 600; font-family: 'Playfair Display', serif; }
+@utility text-display-lg { font-size: 56px; line-height: 64px; letter-spacing: -0.02em; font-weight: 700; font-family: 'Playfair Display', serif;}
+@utility text-body-md { font-size: 16px; line-height: 24px; font-weight: 400; font-family: 'Poppins', sans-serif;}
+@utility text-body-lg { font-size: 18px; line-height: 28px; font-weight: 400; font-family: 'Poppins', sans-serif;}
+
+@utility luxury-shadow {
+    box-shadow: 0px 10px 30px rgba(20, 7, 13, 0.05);
+}
+@utility glass-nav {
+    background: rgba(255, 248, 248, 0.8);
+    backdrop-filter: blur(12px);
+}
+@utility peacock-pattern {
+    background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAaKVwEYqtxlH4yG2sUQ2TbqmTglJieWwGnPZKs5LC2Yif58qJn-SfyWcfWIfXnzn4vL9aqx_piM_Pkzn5Dwe-kHpfMvH8aIRFoVCE79nSROWHSWz6__-jIOYSNnBfC84rbQSHuetMzZl7gG7ZzSd6GhlPRLEGO1yOFiN7f0GqAEWATPclCMdgXV1O_acDMDTiTorjT1fbbjVEz9ac8TrmWlT2q-0w-tjS6gjEbXkyj5FiHYkNFclx-dm-U2Ap6m8yYOedt1TPxOjk');
+    background-size: 400px;
+    background-repeat: repeat;
+    opacity: 0.03;
+}
+@utility hero-gradient {
+    background: linear-gradient(to right, rgba(20, 7, 13, 0.9) 30%, rgba(20, 7, 13, 0.4) 100%);
+}
+@utility filigree-divider {
+    height: 2px;
+    background: linear-gradient(90deg, transparent 0%, #D4AF37 50%, transparent 100%);
+    width: 100%;
+    max-width: 300px;
+    margin: 24px auto;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  color: var(--color-on-surface);
+  background-color: var(--color-surface);
+}
