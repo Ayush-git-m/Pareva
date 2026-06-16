@@ -1,9 +1,26 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import SearchBar from './SearchBar';
+import { api } from '../lib/api';
 
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [goldRate, setGoldRate] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchRate() {
+      try {
+        const settings = await api.getSettings();
+        if (settings.goldRate22k) {
+          setGoldRate(settings.goldRate22k);
+        }
+      } catch (err) {
+        console.error("Error fetching gold rate in header", err);
+      }
+    }
+    fetchRate();
+  }, []);
 
   return (
     <nav className="sticky top-0 z-50 glass-nav border-b border-outline-variant/30">
@@ -20,13 +37,16 @@ export default function Header() {
             />
           </Link>
 
-          {/* Mobile Menu Toggle */}
-          <button 
-            className="md:hidden text-primary p-2"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          >
-            {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </button>
+          {/* Mobile Menu Actions */}
+          <div className="flex items-center gap-2 md:hidden">
+            <SearchBar />
+            <button 
+              className="text-primary p-2"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            >
+              {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
+          </div>
         </div>
 
         {/* Desktop Navigation */}
@@ -43,24 +63,25 @@ export default function Header() {
           >
             Collections
           </Link>
-          <Link
-            className="text-label-lg text-on-surface-variant hover:text-primary transition-colors duration-300"
-            to="/#gold-rate"
+          <button
+            onClick={() => {
+              const el = document.getElementById('heritage');
+              if (el) el.scrollIntoView({ behavior: 'smooth' });
+            }}
+            className="flex items-center gap-2 bg-[#E5D38A]/20 text-[#111111] border border-[#E5D38A]/50 px-4 py-2 rounded-full font-medium text-sm hover:bg-[#E5D38A]/30 transition-colors shadow-sm"
           >
-            Gold Rate
-          </Link>
-          <Link
-            className="text-label-lg text-on-surface-variant hover:text-primary transition-colors duration-300"
-            to="/#contact"
-          >
-            About Us
-          </Link>
+            <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+            {goldRate ? `22k Today: ${goldRate}` : 'Live Market Rates'}
+          </button>
           <Link
             className="text-label-lg text-on-surface-variant hover:text-primary transition-colors duration-300"
             to="/#contact"
           >
             Contact
           </Link>
+          <div className="ml-2">
+            <SearchBar />
+          </div>
         </div>
       </div>
 
@@ -82,20 +103,17 @@ export default function Header() {
             >
               Collections
             </Link>
-            <Link
-              className="text-label-lg text-on-surface-variant"
-              to="/#gold-rate"
-              onClick={() => setIsMobileMenuOpen(false)}
+            <button
+              onClick={() => {
+                setIsMobileMenuOpen(false);
+                const el = document.getElementById('heritage');
+                if (el) el.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="flex items-center gap-2 bg-[#E5D38A]/20 text-[#111111] border border-[#E5D38A]/50 px-4 py-2 rounded-full font-medium text-sm w-fit shadow-sm hover:bg-[#E5D38A]/30 transition-colors"
             >
-              Gold Rate
-            </Link>
-            <Link
-              className="text-label-lg text-on-surface-variant"
-              to="/#contact"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              About Us
-            </Link>
+              <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+              {goldRate ? `22k Today: ${goldRate}` : 'Live Market Rates'}
+            </button>
             <Link
               className="text-label-lg text-on-surface-variant"
               to="/#contact"

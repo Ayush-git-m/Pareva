@@ -1,15 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { collectionsData } from '../data/collections';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { ArrowLeft, Loader2 } from 'lucide-react';
-import { collection, query, where, getDocs, orderBy, doc, getDoc } from 'firebase/firestore';
-import { db } from '../firebase';
+import { api } from '../lib/api';
 
 export default function CollectionPage() {
   const { id } = useParams();
-  const [collectionData, setCollectionData] = useState<any>(collectionsData.find((c) => c.id === id) || null);
+  const [collectionData, setCollectionData] = useState<any>(null);
   const [jewelries, setJewelries] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -18,31 +16,23 @@ export default function CollectionPage() {
       if (!id) return;
       setLoading(true);
       try {
-        // Fetch collection info if not found locally
-        if (!collectionData) {
-          const docRef = doc(db, 'collections', id);
-          const docSnap = await getDoc(docRef);
-          if (docSnap.exists()) {
-            const data = docSnap.data();
-            setCollectionData({
-              id: id,
-              title: data.title,
-              description: data.description,
-              image: data.imageUrl,
-              icon: null
-            });
-          }
-        }
-
-        const q = query(
-          collection(db, 'jewelries'),
-          where('collectionId', '==', id)
-        );
-        const snapshot = await getDocs(q);
-        const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        // Order manually if composite index is not set
-        data.sort((a: any, b: any) => b.createdAt?.toMillis?.() - a.createdAt?.toMillis?.());
+        const allJewelries = await api.getJewelries();
+        const data = allJewelries.filter((j: any) => j.collectionId === id || j.collectionId === Number(id) || String(j.collectionId) === String(id));
         setJewelries(data);
+
+        if (!collectionData) {
+           const allCategories = await api.getCollections();
+           const cat = allCategories.find((c: any) => String(c.id) === String(id));
+           if (cat) {
+             setCollectionData({
+               id: String(cat.id),
+               title: cat.title,
+               description: cat.description,
+               image: cat.imageUrl,
+               icon: null
+             });
+           }
+        }
       } catch (err) {
         console.error("Error fetching data", err);
       } finally {
@@ -52,7 +42,20 @@ export default function CollectionPage() {
     fetchData();
   }, [id]);
 
-  if (!collectionData && !loading) {
+  if (loading) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <Header />
+        <div className="flex-1 flex flex-col items-center justify-center p-8">
+          <Loader2 className="w-8 h-8 animate-spin text-primary mb-4" />
+          <p className="text-body-lg text-on-surface-variant">Loading collection details...</p>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (!collectionData) {
     return (
       <div className="min-h-screen flex flex-col">
         <Header />
@@ -97,11 +100,11 @@ export default function CollectionPage() {
       <section className="py-16 md:py-24 bg-surface">
         <div className="max-w-container-max mx-auto px-gutter">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-16 items-center">
-            <div className="rounded-2xl overflow-hidden luxury-shadow">
+            <div className="rounded-2xl overflow-hidden luxury-shadow bg-[#1a0508]">
               <img
                 src={collectionData.image}
                 alt={collectionData.title}
-                className="w-full h-auto object-cover aspect-[4/5]"
+                className="w-full h-full sm:h-auto object-contain sm:object-cover aspect-[4/5]"
               />
             </div>
             <div>

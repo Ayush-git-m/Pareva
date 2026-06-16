@@ -25,6 +25,11 @@
   --color-outline: #8b7079;
   --color-outline-variant: #debec8;
 
+  --color-error: #ba1a1a;
+  --color-on-error: #ffffff;
+  --color-error-container: #ffdad6;
+  --color-on-error-container: #410002;
+
   --color-luxury-gold: #D4AF37;
   --color-deep-burgundy: #14070D;
 

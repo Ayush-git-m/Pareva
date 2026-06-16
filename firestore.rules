@@ -7,16 +7,22 @@ service cloud.firestore {
 
     match /collections/{collectionId} {
       allow read: if true;
-      allow create: if true;
-      allow update: if true;
-      allow delete: if true;
+      allow create, update, delete: if request.auth != null && (request.auth.token.email == 'ayushclasses10@gmail.com' || request.auth.token.email.lower() == 'shreeparevajewellers@gmail.com');
     }
 
     match /jewelries/{jewelryId} {
       allow read: if true;
-      allow create: if true;
-      allow update: if true;
-      allow delete: if true;
+      allow create, update, delete: if request.auth != null && (request.auth.token.email == 'ayushclasses10@gmail.com' || request.auth.token.email.lower() == 'shreeparevajewellers@gmail.com');
+    }
+
+    match /heroBanners/{bannerId} {
+      allow read: if true;
+      allow create, update, delete: if request.auth != null && (request.auth.token.email == 'ayushclasses10@gmail.com' || request.auth.token.email.lower() == 'shreeparevajewellers@gmail.com');
+    }
+    
+    match /settings/{docId} {
+      allow read: if true;
+      allow create, update, delete: if request.auth != null && (request.auth.token.email == 'ayushclasses10@gmail.com' || request.auth.token.email.lower() == 'shreeparevajewellers@gmail.com');
     }
   }
 }

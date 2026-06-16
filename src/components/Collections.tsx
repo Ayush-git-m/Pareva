@@ -1,36 +1,22 @@
 import { useState, useEffect } from 'react';
-import { collectionsData } from '../data/collections';
 import { Link } from 'react-router-dom';
-import { db } from '../firebase';
-import { collection, query, getDocs, orderBy } from 'firebase/firestore';
+import { api } from '../lib/api';
 import { Sparkles } from 'lucide-react';
 
 export default function Collections() {
-  const [categories, setCategories] = useState<any[]>(collectionsData);
+  const [categories, setCategories] = useState<any[]>([]);
 
   useEffect(() => {
     async function fetchCollections() {
       try {
-        const q = query(collection(db, 'collections'));
-        const snapshot = await getDocs(q);
-        const fetched = snapshot.docs.map(doc => ({
-          id: doc.id,
-          title: doc.data().title,
-          description: doc.data().description,
-          image: doc.data().imageUrl,
-          createdAt: doc.data().createdAt,
+        const fetched = await api.getCollections();
+        const mapped = fetched.map((c: any) => ({
+          ...c,
+          image: c.imageUrl,
           icon: <Sparkles className="w-8 h-8 text-luxury-gold mx-auto mb-4" />
         }));
         
-        // Sort in memory
-        fetched.sort((a, b) => {
-          const tA = a.createdAt?.toMillis?.() || 0;
-          const tB = b.createdAt?.toMillis?.() || 0;
-          return tB - tA;
-        });
-
-        // Merge fetched categories with local ones (we can append to local ones)
-        setCategories([...fetched, ...collectionsData]);
+        setCategories(mapped);
       } catch (err) {
         console.error("Error fetching collections:", err);
       }
@@ -51,13 +37,13 @@ export default function Collections() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {categories.map((item, idx) => (
             <Link
-              key={item.id + idx}
+              key={item.id}
               to={`/collection/${item.id}`}
               id={item.id === 'bridal-collection' ? 'bridal-collection' : undefined}
-              className="group relative overflow-hidden rounded-2xl luxury-shadow bg-white aspect-[4/5] cursor-pointer scroll-mt-24 block"
+              className="group relative overflow-hidden rounded-2xl luxury-shadow bg-black aspect-[4/5] cursor-pointer scroll-mt-24 block"
             >
               <img
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                className="w-full h-full object-contain sm:object-cover transition-transform duration-700 group-hover:scale-110"
                 alt={item.title}
                 src={item.image}
               />

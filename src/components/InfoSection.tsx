@@ -1,56 +1,67 @@
 import { TrendingUp, CheckCircle } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { api } from '../lib/api';
 
 export default function Sections() {
+  const [goldRate22k, setGoldRate22k] = useState('');
+  const [goldRate24k, setGoldRate24k] = useState('');
+
+  useEffect(() => {
+    async function fetchSettings() {
+      try {
+        const settings = await api.getSettings();
+        if (settings.goldRate22k) setGoldRate22k(settings.goldRate22k);
+        if (settings.goldRate24k) setGoldRate24k(settings.goldRate24k);
+      } catch (err) {
+        console.error("Error fetching settings:", err);
+      }
+    }
+    fetchSettings();
+  }, []);
+
   return (
-    <section id="gold-rate" className="py-16 md:py-24 bg-surface-container-low relative">
+    <section id="heritage" className="py-16 md:py-24 bg-surface-container-low relative">
       <div className="max-w-container-max mx-auto px-gutter">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-          {/* Gold Rate Card */}
-          <div className="bg-white p-8 md:p-10 rounded-3xl luxury-shadow border border-luxury-gold/20 relative overflow-hidden group">
-            <div className="absolute top-0 right-0 p-6 md:p-8 text-luxury-gold/10">
-              <TrendingUp className="w-24 h-24 md:w-32 md:h-32" />
-            </div>
-            <div className="relative z-10">
-              <div className="text-center mb-8">
-                <h3 className="text-3xl md:text-headline-md text-primary font-headline-md">
-                  Today's Gold Rate
-                </h3>
-                <p className="text-sm md:text-label-lg text-on-surface-variant">
-                  Last updated: June 11, 2026
-                </p>
-              </div>
-              <div className="space-y-6">
-                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 py-4 border-b border-outline-variant/30">
-                  <div className="flex items-center gap-3">
-                    <span className="w-2 h-2 rounded-full bg-luxury-gold"></span>
-                    <span className="text-base md:text-label-lg text-on-surface">
-                      24K Gold (10g)
-                    </span>
-                  </div>
-                  <span className="text-3xl md:text-headline-md text-primary font-headline-md">
-                    ₹1,68,068
-                  </span>
-                </div>
-                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 py-4 border-b border-outline-variant/30">
-                  <div className="flex items-center gap-3">
-                    <span className="w-2 h-2 rounded-full bg-secondary"></span>
-                    <span className="text-base md:text-label-lg text-on-surface">
-                      22K Gold (10g)
-                    </span>
-                  </div>
-                  <span className="text-3xl md:text-headline-md text-primary font-headline-md">
-                    ₹1,54,063
-                  </span>
-                </div>
-              </div>
-              <a 
-                href="https://www.goodreturns.in/gold-rates/ahmedabad.html" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="w-full mt-10 bg-primary text-white py-4 rounded-full text-sm md:text-label-lg hover:bg-on-secondary-container transition-all block text-center"
-              >
-                View Live Gold Rate
-              </a>
+          
+          {/* Left Side: Gold Rate */}
+          <div className="flex flex-col h-full justify-center">
+            <div className="bg-white rounded-[32px] luxury-shadow border border-[#E5D38A]/40 p-10 md:p-14 relative overflow-hidden group min-h-[400px] flex flex-col justify-center">
+               <div className="absolute top-0 right-0 w-64 h-64 bg-[#E5D38A]/10 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/3"></div>
+               <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#E5D38A]/5 rounded-full blur-[60px] translate-y-1/3 -translate-x-1/3"></div>
+               
+               <div className="relative z-10 flex flex-col items-center text-center">
+                 <div className="w-16 h-16 bg-[#111111] rounded-full flex items-center justify-center mb-8 shadow-lg shadow-black/5">
+                   <TrendingUp className="w-8 h-8 text-[#E5D38A]" />
+                 </div>
+                 
+                 <h3 className="text-3xl md:text-4xl font-headline-md text-[#111111] mb-2">
+                   Live Market Rates
+                 </h3>
+                 <p className="text-on-surface-variant text-base md:text-lg mb-10 max-w-[280px]">
+                   Updated daily. Assured purity and transparency.
+                 </p>
+                 
+                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full">
+                   <div className="bg-surface-container-lowest p-6 rounded-2xl border border-outline-variant/60 text-center transition-all duration-500 hover:-translate-y-1 hover:border-[#E5D38A]/60 hover:shadow-lg group/card">
+                      <div className="flex items-center justify-center gap-2 mb-3">
+                         <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+                         <h4 className="text-label-lg uppercase tracking-widest text-[#111111] font-medium">22K Gold</h4>
+                      </div>
+                      <p className="text-4xl md:text-5xl font-mono font-medium text-[#111111]">{goldRate22k || '---'}</p>
+                      <p className="text-on-surface-variant/70 text-xs mt-3 uppercase tracking-wider">Per 10 Grams</p>
+                   </div>
+                   
+                   <div className="bg-surface-container-lowest p-6 rounded-2xl border border-outline-variant/60 text-center transition-all duration-500 hover:-translate-y-1 hover:border-[#E5D38A]/60 hover:shadow-lg group/card">
+                      <div className="flex items-center justify-center gap-2 mb-3">
+                         <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+                         <h4 className="text-label-lg uppercase tracking-widest text-[#111111] font-medium">24K Gold</h4>
+                      </div>
+                      <p className="text-4xl md:text-5xl font-mono font-medium text-[#111111]">{goldRate24k || '---'}</p>
+                      <p className="text-on-surface-variant/70 text-xs mt-3 uppercase tracking-wider">Per 10 Grams</p>
+                   </div>
+                 </div>
+               </div>
             </div>
           </div>
 
