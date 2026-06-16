@@ -2,20 +2,12 @@ import { drizzle } from 'drizzle-orm/node-postgres';
 import pg from 'pg';
 import * as schema from './schema.js';
 
-export const createPool = () => {
-  return new pg.Pool({
-    host: process.env.SQL_HOST,
-    user: process.env.SQL_USER,
-    password: process.env.SQL_PASSWORD,
-    database: process.env.SQL_DB_NAME,
-    ssl: {
-      rejectUnauthorized: false,
-    },
-    connectionTimeoutMillis: 15000,
-  });
-};
-
-const pool = createPool();
+const pool = new pg.Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false,
+  },
+});
 
 pool.on('error', (err) => {
   console.error('Unexpected error on idle SQL pool client:', err);
