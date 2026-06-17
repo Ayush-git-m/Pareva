@@ -15,34 +15,34 @@ export default function ShopByGender() {
           {/* For Him */}
           <Link 
             to="/gender/him"
-            className="group relative overflow-hidden rounded-2xl luxury-shadow aspect-[3/4] sm:aspect-[4/3] md:aspect-[3/2] cursor-pointer block"
+            className="group relative overflow-hidden rounded-2xl luxury-shadow cursor-pointer block"
           >
             <img 
               src="/images/Forhm.png" 
               alt="Shop For Him" 
-              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+              className="w-full h-auto object-contain transition-transform duration-700 group-hover:scale-105"
             />
             <div className="absolute inset-0 flex flex-col justify-end items-center pb-8 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-              <Link to="/gender/him" className="inline-flex items-center justify-center bg-primary text-white px-8 py-3 rounded-full text-sm font-medium hover:bg-on-secondary-container transition-colors shadow-lg">
+              <span className="inline-flex items-center justify-center bg-primary text-white px-8 py-3 rounded-full text-sm font-medium shadow-lg">
                 Explore Collection
-              </Link>
+              </span>
             </div>
           </Link>
 
           {/* For Her */}
           <Link 
             to="/gender/her"
-            className="group relative overflow-hidden rounded-2xl luxury-shadow aspect-[3/4] sm:aspect-[4/3] md:aspect-[3/2] cursor-pointer block"
+            className="group relative overflow-hidden rounded-2xl luxury-shadow cursor-pointer block"
           >
             <img 
               src="/images/Forher.png" 
               alt="Shop For Her" 
-              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+              className="w-full h-auto object-contain transition-transform duration-700 group-hover:scale-105"
             />
             <div className="absolute inset-0 flex flex-col justify-end items-center pb-8 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-              <Link to="/gender/her" className="inline-flex items-center justify-center bg-primary text-white px-8 py-3 rounded-full text-sm font-medium hover:bg-on-secondary-container transition-colors shadow-lg">
+              <span className="inline-flex items-center justify-center bg-primary text-white px-8 py-3 rounded-full text-sm font-medium shadow-lg">
                 Explore Collection
-              </Link>
+              </span>
             </div>
           </Link>
         </div>

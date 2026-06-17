@@ -43,7 +43,7 @@ export default function Collections() {
               className="group relative overflow-hidden rounded-2xl luxury-shadow bg-black aspect-[4/5] cursor-pointer scroll-mt-24 block"
             >
               <img
-                className="w-full h-full object-contain sm:object-cover transition-transform duration-700 group-hover:scale-110"
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                 alt={item.title}
                 src={item.image}
               />
