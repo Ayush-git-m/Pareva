@@ -50,9 +50,11 @@ export default function Hero() {
         <Swiper
           modules={[Autoplay, EffectFade, Pagination]}
           effect="fade"
+          fadeEffect={{ crossFade: true }}
           pagination={{ clickable: true }}
           autoplay={{ delay: 5000, disableOnInteraction: false }}
           loop={true}
+          autoHeight={true}
           className="w-full"
         >
           {displayBanners.map((banner) => (
