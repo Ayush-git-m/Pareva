@@ -12,75 +12,37 @@ export default function ShopByGender() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
-          {/* Shop For Him Card */}
+          {/* For Him */}
           <Link 
             to="/gender/him"
-            className="group relative overflow-hidden rounded-2xl luxury-shadow bg-[#1a0508] aspect-[3/4] sm:aspect-[4/3] md:aspect-[3/2] cursor-pointer block"
+            className="group relative overflow-hidden rounded-2xl luxury-shadow aspect-[3/4] sm:aspect-[4/3] md:aspect-[3/2] cursor-pointer block"
           >
-            {/* Image placeholder with maroon overlay */}
-            <div className="absolute inset-0 bg-[#3a0a12]">
-              <img 
-                src="/images/Forhm.png"
-                alt="Shop For Him" 
-                className="w-full h-full object-contain sm:object-cover opacity-60 mix-blend-overlay transition-transform duration-700 group-hover:scale-105"
-                referrerPolicy="no-referrer"
-              />
-            </div>
-            
-            {/* Content matching the user's uploaded image text */}
-            <div className="absolute inset-0 p-8 md:p-12 pl-8 md:pl-16 flex flex-col justify-end items-start bg-gradient-to-r from-black/80 via-black/40 to-transparent">
-              <div className="border border-luxury-gold/50 rounded-xl p-6 backdrop-blur-sm bg-[#1a0508]/60 transition-colors duration-300 group-hover:bg-[#2a080d]/80">
-                <h3 className="text-5xl md:text-6xl text-luxury-gold font-headline-lg mb-4 drop-shadow-md">
-                  For Him
-                </h3>
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-[1px] bg-luxury-gold/50"></div>
-                  <div className="w-1.5 h-1.5 rotate-45 border border-luxury-gold/50"></div>
-                  <div className="w-8 h-[1px] bg-luxury-gold/50"></div>
-                </div>
-                <p className="text-white/90 font-body-lg text-lg tracking-wide mt-4 mb-6">
-                  Bold. Refined. Timeless.
-                </p>
-                <div className="inline-flex items-center justify-center bg-primary text-white px-6 py-2 rounded-full text-sm font-medium hover:bg-on-secondary-container transition-colors">
-                  Explore Collection
-                </div>
-              </div>
+            <img 
+              src="/images/Forhm.png" 
+              alt="Shop For Him" 
+              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+            />
+            <div className="absolute inset-0 flex flex-col justify-end items-center pb-8 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              <Link to="/gender/him" className="inline-flex items-center justify-center bg-primary text-white px-8 py-3 rounded-full text-sm font-medium hover:bg-on-secondary-container transition-colors shadow-lg">
+                Explore Collection
+              </Link>
             </div>
           </Link>
 
-          {/* Shop For Her Card */}
+          {/* For Her */}
           <Link 
             to="/gender/her"
-            className="group relative overflow-hidden rounded-2xl luxury-shadow bg-[#1a0508] aspect-[3/4] sm:aspect-[4/3] md:aspect-[3/2] cursor-pointer block"
+            className="group relative overflow-hidden rounded-2xl luxury-shadow aspect-[3/4] sm:aspect-[4/3] md:aspect-[3/2] cursor-pointer block"
           >
-            {/* Image placeholder with maroon overlay */}
-            <div className="absolute inset-0 bg-[#4a0e17]">
-              <img 
-                src="/images/Forher.png"
-                alt="Shop For Her" 
-                className="w-full h-full object-contain sm:object-cover opacity-80 mix-blend-overlay transition-transform duration-700 group-hover:scale-105"
-                referrerPolicy="no-referrer"
-              />
-            </div>
-            
-            {/* Content matching the user's uploaded image text */}
-            <div className="absolute inset-0 p-8 md:p-12 pl-8 md:pl-16 flex flex-col justify-end items-start bg-gradient-to-r from-black/80 via-black/40 to-transparent">
-               <div className="border border-luxury-gold/50 rounded-xl p-6 backdrop-blur-sm bg-[#2a080d]/60 transition-colors duration-300 group-hover:bg-[#4a0e17]/80">
-                <h3 className="text-5xl md:text-6xl text-luxury-gold font-headline-lg mb-4 drop-shadow-md">
-                  For Her
-                </h3>
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-[1px] bg-luxury-gold/50"></div>
-                  <div className="w-1.5 h-1.5 rotate-45 border border-luxury-gold/50"></div>
-                  <div className="w-8 h-[1px] bg-luxury-gold/50"></div>
-                </div>
-                <p className="text-white/90 font-body-lg text-lg tracking-wide mt-4 mb-6">
-                  Elegance. Beauty. Timeless.
-                </p>
-                <div className="inline-flex items-center justify-center bg-primary text-white px-6 py-2 rounded-full text-sm font-medium hover:bg-on-secondary-container transition-colors">
-                  Explore Collection
-                </div>
-              </div>
+            <img 
+              src="/images/Forher.png" 
+              alt="Shop For Her" 
+              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+            />
+            <div className="absolute inset-0 flex flex-col justify-end items-center pb-8 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              <Link to="/gender/her" className="inline-flex items-center justify-center bg-primary text-white px-8 py-3 rounded-full text-sm font-medium hover:bg-on-secondary-container transition-colors shadow-lg">
+                Explore Collection
+              </Link>
             </div>
           </Link>
         </div>
