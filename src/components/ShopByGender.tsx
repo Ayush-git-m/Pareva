@@ -20,7 +20,7 @@ export default function ShopByGender() {
             {/* Image placeholder with maroon overlay */}
             <div className="absolute inset-0 bg-[#3a0a12]">
               <img 
-                src="/for-him.png" 
+                src="/images/Forhm.png"
                 alt="Shop For Him" 
                 className="w-full h-full object-contain sm:object-cover opacity-60 mix-blend-overlay transition-transform duration-700 group-hover:scale-105"
                 referrerPolicy="no-referrer"
@@ -56,7 +56,7 @@ export default function ShopByGender() {
             {/* Image placeholder with maroon overlay */}
             <div className="absolute inset-0 bg-[#4a0e17]">
               <img 
-                src="/for-her.png" 
+                src="/images/Forher.png"
                 alt="Shop For Her" 
                 className="w-full h-full object-contain sm:object-cover opacity-80 mix-blend-overlay transition-transform duration-700 group-hover:scale-105"
                 referrerPolicy="no-referrer"
