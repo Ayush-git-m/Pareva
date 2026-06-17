@@ -1,5 +1,5 @@
 {
-  "name": "Shree Pareva Jewellers",
+  "name": "shree-pareva-jewellers",
   "description": "Timeless elegance and trusted heritage gold, diamond, and silver jewellery boutique.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]

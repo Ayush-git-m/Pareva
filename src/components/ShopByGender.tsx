@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 export default function ShopByGender() {
   return (
     <section className="py-16 md:py-24 bg-surface relative overflow-hidden">
@@ -11,7 +13,10 @@ export default function ShopByGender() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
           {/* Shop For Him Card */}
-          <div className="group relative overflow-hidden rounded-2xl luxury-shadow bg-[#1a0508] aspect-[3/4] sm:aspect-[4/3] md:aspect-[3/2] cursor-pointer">
+          <Link 
+            to="/gender/him"
+            className="group relative overflow-hidden rounded-2xl luxury-shadow bg-[#1a0508] aspect-[3/4] sm:aspect-[4/3] md:aspect-[3/2] cursor-pointer block"
+          >
             {/* Image placeholder with maroon overlay */}
             <div className="absolute inset-0 bg-[#3a0a12]">
               <img 
@@ -33,15 +38,21 @@ export default function ShopByGender() {
                   <div className="w-1.5 h-1.5 rotate-45 border border-luxury-gold/50"></div>
                   <div className="w-8 h-[1px] bg-luxury-gold/50"></div>
                 </div>
-                <p className="text-white/90 font-body-lg text-lg tracking-wide mt-4">
+                <p className="text-white/90 font-body-lg text-lg tracking-wide mt-4 mb-6">
                   Bold. Refined. Timeless.
                 </p>
+                <div className="inline-flex items-center justify-center bg-primary text-white px-6 py-2 rounded-full text-sm font-medium hover:bg-on-secondary-container transition-colors">
+                  Explore Collection
+                </div>
               </div>
             </div>
-          </div>
+          </Link>
 
           {/* Shop For Her Card */}
-          <div className="group relative overflow-hidden rounded-2xl luxury-shadow bg-[#1a0508] aspect-[3/4] sm:aspect-[4/3] md:aspect-[3/2] cursor-pointer">
+          <Link 
+            to="/gender/her"
+            className="group relative overflow-hidden rounded-2xl luxury-shadow bg-[#1a0508] aspect-[3/4] sm:aspect-[4/3] md:aspect-[3/2] cursor-pointer block"
+          >
             {/* Image placeholder with maroon overlay */}
             <div className="absolute inset-0 bg-[#4a0e17]">
               <img 
@@ -63,12 +74,15 @@ export default function ShopByGender() {
                   <div className="w-1.5 h-1.5 rotate-45 border border-luxury-gold/50"></div>
                   <div className="w-8 h-[1px] bg-luxury-gold/50"></div>
                 </div>
-                <p className="text-white/90 font-body-lg text-lg tracking-wide mt-4">
+                <p className="text-white/90 font-body-lg text-lg tracking-wide mt-4 mb-6">
                   Elegance. Beauty. Timeless.
                 </p>
+                <div className="inline-flex items-center justify-center bg-primary text-white px-6 py-2 rounded-full text-sm font-medium hover:bg-on-secondary-container transition-colors">
+                  Explore Collection
+                </div>
               </div>
             </div>
-          </div>
+          </Link>
         </div>
 
       </div>

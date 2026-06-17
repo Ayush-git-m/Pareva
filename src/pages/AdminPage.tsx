@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { auth, db, storage } from '../firebase';
+import { auth, db } from '../firebase';
 import { signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged, User } from 'firebase/auth';
-import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { api, blobToBase64 } from '../lib/api';
-
 import { Trash2, Plus, Image as ImageIcon, Loader2, Power, ArrowUp, ArrowDown } from 'lucide-react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -49,7 +47,20 @@ const compressImage = (file: File): Promise<Blob> => {
     reader.readAsDataURL(file);
   });
 };
+const uploadImageToCloudinary = async (file: File): Promise<string> => {
+  const compressedBlob = await compressImage(file);
+  const formData = new FormData();
+  formData.append('file', compressedBlob);
+  formData.append('upload_preset', 'ShreePareva');
 
+  const response = await fetch(
+    'https://api.cloudinary.com/v1_1/dchpzb4zg/image/upload',
+    { method: 'POST', body: formData }
+  );
+  if (!response.ok) throw new Error('Image upload failed');
+  const data = await response.json();
+  return data.secure_url;
+};
 export default function AdminPage() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
@@ -62,6 +73,8 @@ export default function AdminPage() {
   const [bridalVideoUrl, setBridalVideoUrl] = useState('');
   const [goldRate22k, setGoldRate22k] = useState('');
   const [goldRate24k, setGoldRate24k] = useState('');
+  const [forHimCollectionIds, setForHimCollectionIds] = useState<string[]>([]);
+  const [forHerCollectionIds, setForHerCollectionIds] = useState<string[]>([]);
   
   // Jewelry State
   const [title, setTitle] = useState('');
@@ -76,6 +89,7 @@ export default function AdminPage() {
   const [catDescription, setCatDescription] = useState('');
   const [catImagePreview, setCatImagePreview] = useState('');
   const [catImageFile, setCatImageFile] = useState<File | null>(null);
+  const [catGenderAssignment, setCatGenderAssignment] = useState<'none' | 'him' | 'her'>('none');
 
   // Banner State
   const [bannerTitle, setBannerTitle] = useState('');
@@ -139,6 +153,22 @@ export default function AdminPage() {
       }
       if (sData.goldRate24k) {
          setGoldRate24k(sData.goldRate24k);
+      }
+      if (sData.forHimCollectionId) {
+         try {
+            const parsed = JSON.parse(sData.forHimCollectionId);
+            setForHimCollectionIds(Array.isArray(parsed) ? parsed : [sData.forHimCollectionId]);
+         } catch {
+            setForHimCollectionIds([sData.forHimCollectionId]);
+         }
+      }
+      if (sData.forHerCollectionId) {
+         try {
+            const parsed = JSON.parse(sData.forHerCollectionId);
+            setForHerCollectionIds(Array.isArray(parsed) ? parsed : [sData.forHerCollectionId]);
+         } catch {
+            setForHerCollectionIds([sData.forHerCollectionId]);
+         }
       }
 
     } catch (err: any) {
@@ -211,42 +241,38 @@ export default function AdminPage() {
     }
   };
 
-  const handleVideoFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+const handleVideoFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const file = e.target.files?.[0];
+  if (!file) return;
+  if (file.size > 50 * 1024 * 1024) {
+    setError('Video is too large! Please upload videos under 50MB.');
+    return;
+  }
+  setError('');
+  setUploadingVideo(true);
+  setVideoUploadProgress(0);
 
-    if (file.size > 50 * 1024 * 1024) {
-      setError('Video is too large! Please upload videos under 50MB.');
-      return;
-    }
-    
-    setError('');
-    setUploadingVideo(true);
-    setVideoUploadProgress(0);
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('upload_preset', 'ShreePareva');
+  formData.append('resource_type', 'video');
 
-    const fileRef = ref(storage, `videos/bridal_${Date.now()}_${file.name}`);
-    const uploadTask = uploadBytesResumable(fileRef, file);
-
-    uploadTask.on(
-      'state_changed',
-      (snapshot) => {
-        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        setVideoUploadProgress(progress);
-      },
-      (error) => {
-        console.error("Video upload error:", error);
-        setError('Error uploading video.');
-        setUploadingVideo(false);
-      },
-      async () => {
-        const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-        setBridalVideoUrl(downloadURL);
-        setUploadingVideo(false);
-        setSuccessMsg('Video uploaded successfully! Make sure to save settings.');
-        setTimeout(() => setSuccessMsg(''), 4000);
-      }
-    );
-  };
+  fetch('https://api.cloudinary.com/v1_1/dchpzb4zg/video/upload', {
+    method: 'POST',
+    body: formData,
+  })
+    .then(res => res.json())
+    .then(data => {
+      setBridalVideoUrl(data.secure_url);
+      setUploadingVideo(false);
+      setSuccessMsg('Video uploaded! Save settings to apply.');
+      setTimeout(() => setSuccessMsg(''), 4000);
+    })
+    .catch(err => {
+      setError('Error uploading video.');
+      setUploadingVideo(false);
+    });
+};    
 
   const handleAddJewelry = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -264,7 +290,7 @@ export default function AdminPage() {
       if (imageFile) {
         const compressedBlob = await compressImage(imageFile);
         const fileName = imageFile.name.split('.')[0] + '.webp';
-        finalImageUrl = await blobToBase64(compressedBlob);
+        finalImageUrl = await uploadImageToCloudinary(imageFile);
       }
 
       const newJewelry: any = {
@@ -312,7 +338,7 @@ export default function AdminPage() {
       if (catImageFile) {
         const compressedBlob = await compressImage(catImageFile);
         const fileName = catImageFile.name.split('.')[0] + '.webp';
-        finalImageUrl = await blobToBase64(compressedBlob);
+        finalImageUrl = await uploadImageToCloudinary(catImageFile);
       }
 
       const newCategory: any = {
@@ -320,11 +346,27 @@ export default function AdminPage() {
         description: catDescription,
         imageUrl: finalImageUrl,
       };
-      await api.addCollection(newCategory);
+      const createdCategory = await api.addCollection(newCategory);
+      
+      if (catGenderAssignment === 'him') {
+         const newForHimIds = [...forHimCollectionIds, String(createdCategory.id)];
+         await api.updateSettings({
+            forHimCollectionId: JSON.stringify(newForHimIds)
+         });
+         setForHimCollectionIds(newForHimIds);
+      } else if (catGenderAssignment === 'her') {
+         const newForHerIds = [...forHerCollectionIds, String(createdCategory.id)];
+         await api.updateSettings({
+            forHerCollectionId: JSON.stringify(newForHerIds)
+         });
+         setForHerCollectionIds(newForHerIds);
+      }
       
       setCatTitle('');
       setCatDescription('');
       setCatImagePreview('');
+      setCatImageFile(null);
+      setCatGenderAssignment('none');
       
       setSuccessMsg('Category uploaded and added successfully.');
       setTimeout(() => setSuccessMsg(''), 4000);
@@ -354,7 +396,7 @@ export default function AdminPage() {
       if (bannerImageFile) {
         const compressedBlob = await compressImage(bannerImageFile);
         const fileName = bannerImageFile.name.split('.')[0] + '.webp';
-        finalImageUrl = await blobToBase64(compressedBlob);
+        finalImageUrl = await uploadImageToCloudinary(bannerImageFile);
       }
 
       const newBanner = {
@@ -407,7 +449,9 @@ export default function AdminPage() {
       await api.updateSettings({
          bridalVideoUrl: bridalVideoUrl,
          goldRate22k: goldRate22k,
-         goldRate24k: goldRate24k
+         goldRate24k: goldRate24k,
+         forHimCollectionId: JSON.stringify(forHimCollectionIds),
+         forHerCollectionId: JSON.stringify(forHerCollectionIds)
       });
       setSuccessMsg('Settings updated successfully!');
       setTimeout(() => setSuccessMsg(''), 4000);
@@ -749,6 +793,20 @@ export default function AdminPage() {
                           </label>
                         </div>
                       </div>
+                      
+                      <div>
+                        <label className="block text-body-sm font-medium text-on-surface mb-1">Add to Frontpage Gender Collection (Optional)</label>
+                        <select
+                           value={catGenderAssignment}
+                           onChange={(e) => setCatGenderAssignment(e.target.value as any)}
+                           className="w-full px-4 py-2 border border-outline-variant/50 rounded-lg focus:outline-none focus:border-primary"
+                        >
+                           <option value="none">None</option>
+                           <option value="him">For Him</option>
+                           <option value="her">For Her</option>
+                        </select>
+                      </div>
+
                       <button
                         type="submit"
                         disabled={isSubmitting}
@@ -1041,6 +1099,47 @@ export default function AdminPage() {
                         </div>
                       </div>
                       
+                      <div className="mb-6 grid grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-label-md font-medium text-on-surface mb-2">
+                            "For Him" Collections
+                          </label>
+                          <select
+                            multiple
+                            className="w-full border border-outline bg-transparent py-2 px-3 rounded-lg text-on-surface focus:border-primary focus:outline-none transition-colors h-32"
+                            value={Array.isArray(forHimCollectionIds) ? forHimCollectionIds : []}
+                            onChange={(e) => {
+                              const options = Array.from(e.target.selectedOptions);
+                              setForHimCollectionIds(options.map(o => o.value));
+                            }}
+                          >
+                            {categories.map((c: any) => (
+                              <option key={c.id} value={c.id}>{c.title}</option>
+                            ))}
+                          </select>
+                          <p className="text-xs text-on-surface-variant mt-1">Hold Ctrl/Cmd to select multiple. Order clicked matters.</p>
+                        </div>
+                        <div>
+                          <label className="block text-label-md font-medium text-on-surface mb-2">
+                            "For Her" Collections
+                          </label>
+                          <select
+                            multiple
+                            className="w-full border border-outline bg-transparent py-2 px-3 rounded-lg text-on-surface focus:border-primary focus:outline-none transition-colors h-32"
+                            value={Array.isArray(forHerCollectionIds) ? forHerCollectionIds : []}
+                            onChange={(e) => {
+                              const options = Array.from(e.target.selectedOptions);
+                              setForHerCollectionIds(options.map(o => o.value));
+                            }}
+                          >
+                            {categories.map((c: any) => (
+                              <option key={c.id} value={c.id}>{c.title}</option>
+                            ))}
+                          </select>
+                          <p className="text-xs text-on-surface-variant mt-1">Hold Ctrl/Cmd to select multiple. Order clicked matters.</p>
+                        </div>
+                      </div>
+
                       <button
                         type="submit"
                         disabled={isSubmitting}

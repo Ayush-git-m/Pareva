@@ -88,16 +88,16 @@ export default function Footer() {
             </div>
             <ul className="space-y-5 text-on-surface text-sm">
               <li>
-                <Link className="hover:text-luxury-gold transition-colors" to="/collection/gold-jewelry">Gold jewelry</Link>
+                <span className="hover:text-luxury-gold transition-colors cursor-default">Gold jewelry</span>
               </li>
               <li>
-                <Link className="hover:text-luxury-gold transition-colors" to="/collection/silver-jewelry">Silver jewelry</Link>
+                <span className="hover:text-luxury-gold transition-colors cursor-default">Silver jewelry</span>
               </li>
               <li>
-                <Link className="hover:text-luxury-gold transition-colors" to="/collection/mens-luxury">Men's luxury</Link>
+                <span className="hover:text-luxury-gold transition-colors cursor-default">Men's luxury</span>
               </li>
               <li>
-                <Link className="hover:text-luxury-gold transition-colors" to="/collection/daily-wear">Daily wear</Link>
+                <span className="hover:text-luxury-gold transition-colors cursor-default">Daily wear</span>
               </li>
             </ul>
           </div>
@@ -114,19 +114,19 @@ export default function Footer() {
             </div>
             <ul className="space-y-5 text-on-surface text-sm">
               <li>
-                <Link className="hover:text-luxury-gold transition-colors" to="/services#custom-jewellery">Custom Jewellery</Link>
+                <span className="hover:text-luxury-gold transition-colors cursor-default">Custom Jewellery</span>
               </li>
               <li>
-                <Link className="hover:text-luxury-gold transition-colors" to="/services#repair">Repair & Polish</Link>
+                <span className="hover:text-luxury-gold transition-colors cursor-default">Repair & Polish</span>
               </li>
               <li>
-                <Link className="hover:text-luxury-gold transition-colors" to="/services#investment">Investment Plans</Link>
+                <span className="hover:text-luxury-gold transition-colors cursor-default">Investment Plans</span>
               </li>
               <li>
-                <Link className="hover:text-luxury-gold transition-colors" to="/services#corporate">Corporate Gifting</Link>
+                <span className="hover:text-luxury-gold transition-colors cursor-default">Corporate Gifting</span>
               </li>
               <li>
-                <Link className="hover:text-luxury-gold transition-colors" to="/services#hallmark">Hallmark Testing</Link>
+                <span className="hover:text-luxury-gold transition-colors cursor-default">Hallmark Testing</span>
               </li>
             </ul>
           </div>
