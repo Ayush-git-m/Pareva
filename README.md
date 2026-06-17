@@ -1,20 +1,166 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://ai.google.dev/static/site-assets/images/share-ais-513315318.png" />
-</div>
+# Shree Pareva Jewellers
 
-# Run and deploy your AI Studio app
+A modern full-stack jewellery showroom website built for showcasing premium gold and silver jewellery collections with an elegant user experience and powerful admin management.
 
-This contains everything you need to run your app locally.
+## Live Demo
 
-View your app in AI Studio: https://ai.studio/apps/0019695f-5e24-458e-a4a2-94a0c6bf8e7e
+https://pareva-production.up.railway.app/admin
 
-## Run Locally
+---
 
-**Prerequisites:**  Node.js
+## Features
 
+### Customer Features
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+* Responsive design for mobile, tablet and desktop
+* Premium jewellery showcase
+* Category-based browsing
+* Shop For Him & Shop For Her collections
+* Product search and filtering
+* Wishlist functionality
+* Shopping cart
+* Jewellery collection gallery
+* Promotional banners and offers
+* Contact and showroom information
+* Google Maps integration
+
+### Admin Features
+
+* Secure admin dashboard
+* Product management
+* Category management
+* Hero banner management
+* Image upload support
+* Collection management
+* Dynamic content updates
+* Product visibility controls
+
+---
+
+## Categories
+
+* Earrings
+* Pendants
+* Pendant Sets
+* Chains
+* Bali
+* Mangalsutra
+* Bangles
+* Bracelets
+* Rings
+* Jewellery Sets
+
+---
+
+## Technology Stack
+
+### Frontend
+
+* React 19
+* TypeScript
+* Tailwind CSS
+* Vite
+
+### Backend
+
+* Node.js
+* Express.js
+
+### Database
+
+* PostgreSQL
+
+### Storage & Services
+
+* Firebase
+* Cloud Code Integration
+
+---
+
+## Key Highlights
+
+* Luxury jewellery-focused user interface
+* Optimized performance and responsive design
+* Dynamic product management
+* Scalable architecture
+* Modern React-based frontend
+* Full-stack deployment ready
+
+---
+
+## Installation
+
+### Clone Repository
+
+```bash
+git clone https://github.com/your-username/shree-pareva-jewellers.git
+cd shree-pareva-jewellers
+```
+
+### Install Dependencies
+
+```bash
+npm install
+```
+
+### Environment Variables
+
+Create a `.env` file:
+
+```env
+DATABASE_URL=your_database_url
+JWT_SECRET=your_secret
+```
+
+### Run Development Server
+
+```bash
+npm run dev
+```
+
+### Build Production Version
+
+```bash
+npm run build
+```
+
+---
+
+## Project Structure
+
+```text
+src/
+├── components/
+├── pages/
+├── assets/
+├── hooks/
+├── services/
+├── context/
+└── App.tsx
+```
+
+---
+
+## Future Improvements
+
+* Online payment gateway integration
+* Order tracking system
+* Customer accounts
+* Product reviews
+* Gold rate integration
+* Inventory management
+* WhatsApp automation
+
+---
+
+## Author
+
+Ayush Yadav
+
+Full Stack Developer
+
+---
+
+## License
+
+This project was developed for Shree Pareva Jewellers and is intended for portfolio and demonstration purposes.
