@@ -28,7 +28,7 @@ export default function StoreInfo() {
                   <MapPin className="w-5 h-5 text-luxury-gold" />
                 </div>
                 <p className="text-base md:text-lg text-[#333333] font-body-lg leading-relaxed pt-1">
-                  23, Udyan Residency, Tragad Rd,<br />
+                  23, Upvan Residency, Tragad Rd,<br />
                   Near Dharti Bungalows, Opp. Chandkheda Railway Station,<br />
                   Chandkheda, Ahmedabad, Gujarat 382470
                 </p>
