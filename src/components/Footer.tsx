@@ -1,4 +1,4 @@
-import { Smile, Camera, AtSign } from 'lucide-react';
+import { Smile, Camera, AtSign, Instagram } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export default function Footer() {
@@ -21,6 +21,12 @@ export default function Footer() {
               and purity you can trust.
             </p>
             <div className="flex gap-4 justify-center md:justify-start">
+              <a
+                className="w-12 h-12 rounded-full border border-luxury-gold/60 text-luxury-gold flex items-center justify-center hover:bg-luxury-gold hover:text-white transition-all duration-300 hover:shadow-lg"
+                href="https://www.instagram.com/shree_pareva_jewellers/"
+              >
+                <Instagram className="w-5 h-5" />
+              </a>
               <a
                 className="w-12 h-12 rounded-full border border-luxury-gold/60 text-luxury-gold flex items-center justify-center hover:bg-luxury-gold hover:text-white transition-all duration-300 hover:shadow-lg"
                 href="#"
