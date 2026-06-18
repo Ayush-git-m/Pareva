@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { auth, db } from '../firebase';
+import { auth, db, storage } from '../firebase';
 import { signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged, User } from 'firebase/auth';
+import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { api, blobToBase64 } from '../lib/api';
+
 import { Trash2, Plus, Image as ImageIcon, Loader2, Power, ArrowUp, ArrowDown } from 'lucide-react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -47,20 +49,7 @@ const compressImage = (file: File): Promise<Blob> => {
     reader.readAsDataURL(file);
   });
 };
-const uploadImageToCloudinary = async (file: File): Promise<string> => {
-  const compressedBlob = await compressImage(file);
-  const formData = new FormData();
-  formData.append('file', compressedBlob);
-  formData.append('upload_preset', 'ShreePareva');
 
-  const response = await fetch(
-    'https://api.cloudinary.com/v1_1/dchpzb4zg/image/upload',
-    { method: 'POST', body: formData }
-  );
-  if (!response.ok) throw new Error('Image upload failed');
-  const data = await response.json();
-  return data.secure_url;
-};
 export default function AdminPage() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
@@ -76,7 +65,7 @@ export default function AdminPage() {
   const [forHimCollectionIds, setForHimCollectionIds] = useState<string[]>([]);
   const [forHerCollectionIds, setForHerCollectionIds] = useState<string[]>([]);
   
-  // Jewellery State
+  // Jewelry State
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [collectionId, setCollectionId] = useState('');
@@ -85,8 +74,8 @@ export default function AdminPage() {
   const [additionalFiles, setAdditionalFiles] = useState<File[]>([]);
   const [additionalPreviews, setAdditionalPreviews] = useState<string[]>([]);
   const [price, setPrice] = useState('');
-  const [weightGrams, setWeightGrams] = useState('');
-  const [weightCarats, setWeightCarats] = useState('');
+  const [weight, setWeight] = useState('');
+  const [carat, setCarat] = useState('');
   
   // Category State
   const [catTitle, setCatTitle] = useState('');
@@ -110,7 +99,7 @@ export default function AdminPage() {
   const [error, setError] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
   const [uploadProgress, setUploadProgress] = useState<number | null>(null);
-  const [itemToDelete, setItemToDelete] = useState<{ id: string, type: 'jewellery' | 'category' | 'banner' } | null>(null);
+  const [itemToDelete, setItemToDelete] = useState<{ id: string, type: 'jewelry' | 'category' | 'banner' } | null>(null);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -137,8 +126,8 @@ export default function AdminPage() {
       setJewelries(jData);
       
       const catData = await api.getCollections();
-      const allCategories = [...catData, ...catData]; // Fixed later
-      setCategories(catData);
+      const allCategories = [...catData]; // Corrected
+      setCategories(allCategories);
       
       if (catData.length > 0 && !collectionId) {
          setCollectionId(catData[0].id);
@@ -220,20 +209,8 @@ export default function AdminPage() {
       reader.readAsDataURL(file);
     }
   };
-  
 
-  const handleCatImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file && checkFileSize(file)) {
-      setCatImageFile(file);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setCatImagePreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-const handleAdditionalImagesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleAdditionalImagesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
     const validFiles = files.filter(checkFileSize);
     
@@ -249,11 +226,24 @@ const handleAdditionalImagesChange = (e: React.ChangeEvent<HTMLInputElement>) =>
       });
     }
   };
-      
+
   const removeAdditionalImage = (index: number) => {
     setAdditionalFiles(prev => prev.filter((_, i) => i !== index));
     setAdditionalPreviews(prev => prev.filter((_, i) => i !== index));
   };
+
+  const handleCatImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file && checkFileSize(file)) {
+      setCatImageFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setCatImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleBannerImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file && checkFileSize(file)) {
@@ -266,40 +256,44 @@ const handleAdditionalImagesChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     }
   };
 
-const handleVideoFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  const file = e.target.files?.[0];
-  if (!file) return;
-  if (file.size > 50 * 1024 * 1024) {
-    setError('Video is too large! Please upload videos under 50MB.');
-    return;
-  }
-  setError('');
-  setUploadingVideo(true);
-  setVideoUploadProgress(0);
+  const handleVideoFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
 
-  const formData = new FormData();
-  formData.append('file', file);
-  formData.append('upload_preset', 'ShreePareva');
-  formData.append('resource_type', 'video');
+    if (file.size > 50 * 1024 * 1024) {
+      setError('Video is too large! Please upload videos under 50MB.');
+      return;
+    }
+    
+    setError('');
+    setUploadingVideo(true);
+    setVideoUploadProgress(0);
 
-  fetch('https://api.cloudinary.com/v1_1/dchpzb4zg/video/upload', {
-    method: 'POST',
-    body: formData,
-  })
-    .then(res => res.json())
-    .then(data => {
-      setBridalVideoUrl(data.secure_url);
-      setUploadingVideo(false);
-      setSuccessMsg('Video uploaded! Save settings to apply.');
-      setTimeout(() => setSuccessMsg(''), 4000);
-    })
-    .catch(err => {
-      setError('Error uploading video.');
-      setUploadingVideo(false);
-    });
-};    
+    const fileRef = ref(storage, `videos/bridal_${Date.now()}_${file.name}`);
+    const uploadTask = uploadBytesResumable(fileRef, file);
 
-  const handleAddJewellery = async (e: React.FormEvent) => {
+    uploadTask.on(
+      'state_changed',
+      (snapshot) => {
+        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        setVideoUploadProgress(progress);
+      },
+      (error) => {
+        console.error("Video upload error:", error);
+        setError('Error uploading video.');
+        setUploadingVideo(false);
+      },
+      async () => {
+        const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+        setBridalVideoUrl(downloadURL);
+        setUploadingVideo(false);
+        setSuccessMsg('Video uploaded successfully! Make sure to save settings.');
+        setTimeout(() => setSuccessMsg(''), 4000);
+      }
+    );
+  };
+
+  const handleAddJewelry = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!title || !description || (!imagePreview && !imageFile)) {
       setError('Please fill in all required fields and upload an image.');
@@ -314,16 +308,17 @@ const handleVideoFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 
       if (imageFile) {
         const compressedBlob = await compressImage(imageFile);
-        
-        finalImageUrl = await uploadImageToCloudinary(imageFile);
+        finalImageUrl = await blobToBase64(compressedBlob);
       }
-    const finalAdditionalUrls: string[] = [];
-for (let i = 0; i < additionalFiles.length; i++) {
-  const url = await uploadImageToCloudinary(additionalFiles[i]);
-  finalAdditionalUrls.push(url);
-}
 
-      const newJewellery: any = {
+      const finalAdditionalUrls: string[] = [];
+      for (let i = 0; i < additionalFiles.length; i++) {
+        const compressedBlob = await compressImage(additionalFiles[i]);
+        const b64 = await blobToBase64(compressedBlob);
+        finalAdditionalUrls.push(b64);
+      }
+
+      const newJewelry: any = {
         title,
         description,
         collectionId,
@@ -331,28 +326,33 @@ for (let i = 0; i < additionalFiles.length; i++) {
         imageUrls: finalAdditionalUrls.length > 0 ? finalAdditionalUrls : null,
       };
       if (price) {
-        newJewellery.price = Number(price);
+        newJewelry.price = Number(price);
       }
-      if (weightGrams) newJewellery.weightGrams = Number(weightGrams);   // ← add
-      if (weightCarats) newJewellery.weightCarats = Number(weightCarats); // ← add
-      await api.addJewellery(newJewellery);
+      if (weight) {
+        newJewelry.weight = weight;
+      }
+      if (carat) {
+        newJewelry.carat = carat;
+      }
+      await api.addJewelry(newJewelry);
       
       setTitle('');
       setDescription('');
       setPrice('');
+      setWeight('');
+      setCarat('');
       setImageFile(null);
       setImagePreview('');
       setAdditionalFiles([]);
       setAdditionalPreviews([]);
-      setSuccessMsg('Jewellery uploaded and added successfully.');
+      
+      setSuccessMsg('Jewelry uploaded and added successfully.');
       setTimeout(() => setSuccessMsg(''), 4000);
-      setWeightGrams('');
-      setWeightCarats('');
       
       await fetchData();
     } catch (err: any) {
       console.error(err);
-      setError(err.message || 'Error adding jewellery');
+      setError(err.message || 'Error adding jewelry');
     } finally {
       setIsSubmitting(false);
     }
@@ -374,7 +374,7 @@ for (let i = 0; i < additionalFiles.length; i++) {
       if (catImageFile) {
         const compressedBlob = await compressImage(catImageFile);
         const fileName = catImageFile.name.split('.')[0] + '.webp';
-        finalImageUrl = await uploadImageToCloudinary(catImageFile);
+        finalImageUrl = await blobToBase64(compressedBlob);
       }
 
       const newCategory: any = {
@@ -432,9 +432,10 @@ for (let i = 0; i < additionalFiles.length; i++) {
       if (bannerImageFile) {
         const compressedBlob = await compressImage(bannerImageFile);
         const fileName = bannerImageFile.name.split('.')[0] + '.webp';
-        finalImageUrl = await uploadImageToCloudinary(bannerImageFile);
+        finalImageUrl = await blobToBase64(compressedBlob);
       }
 
+      const maxOrder = heroBanners.length > 0 ? Math.max(...heroBanners.map(b => b.order ?? 0)) : 0;
       const newBanner = {
         title: bannerTitle,
         subtitle: bannerSubtitle,
@@ -442,7 +443,7 @@ for (let i = 0; i < additionalFiles.length; i++) {
         buttonLink: bannerButtonLink,
         imageUrl: finalImageUrl,
         enabled: true,
-        order: heroBanners.length,
+        order: maxOrder + 1,
       };
       await api.addBanner(newBanner);
 
@@ -466,7 +467,7 @@ for (let i = 0; i < additionalFiles.length; i++) {
   };
 
   const handleDeleteJ = async (id: string) => {
-    setItemToDelete({ id, type: 'jewellery' });
+    setItemToDelete({ id, type: 'jewelry' });
   };
 
   const handleDeleteC = async (id: string) => {
@@ -527,22 +528,20 @@ for (let i = 0; i < additionalFiles.length; i++) {
     if (direction === 'down' && index === heroBanners.length - 1) return;
 
     const newIndex = direction === 'up' ? index - 1 : index + 1;
-    const currentBanner = heroBanners[index];
-    const targetBanner = heroBanners[newIndex];
+    const newBanners = [...heroBanners];
+    const [item] = newBanners.splice(index, 1);
+    newBanners.splice(newIndex, 0, item);
 
     try {
-      setLoading(true);
-      const itemsToUpdate = [
-        { id: currentBanner.id, order: newIndex },
-        { id: targetBanner.id, order: index }
-      ];
+      const itemsToUpdate = newBanners.map((banner, idx) => ({
+        id: banner.id,
+        order: idx
+      }));
       await api.reorderBanners(itemsToUpdate);
       await fetchData();
     } catch (err: any) {
       console.error(err);
-      setError('Error reordering banners');
-    } finally {
-      setLoading(false);
+      setError('Error reordering banners: ' + (err.message || 'unknown error'));
     }
   };
 
@@ -642,8 +641,8 @@ for (let i = 0; i < additionalFiles.length; i++) {
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
                 <div className="lg:col-span-1">
                   <div className="bg-white p-6 rounded-2xl luxury-shadow sticky top-24">
-                    <h2 className="text-title-lg text-primary mb-6">Add New Jewellery</h2>
-                    <form onSubmit={handleAddJewellery} className="space-y-4">
+                    <h2 className="text-title-lg text-primary mb-6">Add New Jewelry</h2>
+                    <form onSubmit={handleAddJewelry} className="space-y-4">
                       <div>
                         <label className="block text-body-sm font-medium text-on-surface mb-1">Title</label>
                         <input
@@ -678,37 +677,39 @@ for (let i = 0; i < additionalFiles.length; i++) {
                           ))}
                         </select>
                       </div>
-                      <div>
-                        <label className="block text-body-sm font-medium text-on-surface mb-1">Price (Optional)</label>
-                        <input
-                          type="number"
-                          value={price}
-                          onChange={(e) => setPrice(e.target.value)}
-                          className="w-full px-4 py-2 border border-outline-variant/50 rounded-lg focus:outline-none focus:border-primary"
-                        />
-                      </div>
-                      <div className="grid grid-cols-2 gap-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                         <div>
-                        <label className="block text-body-sm font-medium text-on-surface mb-1">Weight in Grams (Optional)</label>
-                        <input
-                          type="number"
-                          value={weightGrams}
-                          onChange={(e) => setWeightGrams(e.target.value)}
-                            placeholder="e.g. 5"
-                            className="w-full px-4 py-2 border border-outline-variant/50 rounded-lg focus:outline-none focus:border-primary"/>
-                          </div>
-                          <div>
-                        <label className="block text-body-sm font-medium text-on-surface mb-1">Weight in Carats (Optional)</label>
-                        <input
-                          type="number"
-                          value={weightCarats}
-                          onChange={(e) => setWeightCarats(e.target.value)}
-                          placeholder="e.g. 22"
-                          className="w-full px-4 py-2 border border-outline-variant/50 rounded-lg focus:outline-none focus:border-primary"/>
-                      </div>
+                          <label className="block text-body-sm font-medium text-on-surface mb-1">Price (Optional)</label>
+                          <input
+                            type="number"
+                            value={price}
+                            onChange={(e) => setPrice(e.target.value)}
+                            className="w-full px-4 py-2 border border-outline-variant/50 rounded-lg focus:outline-none focus:border-primary"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-body-sm font-medium text-on-surface mb-1">Weight (Optional)</label>
+                          <input
+                            type="text"
+                            placeholder="e.g. 10g"
+                            value={weight}
+                            onChange={(e) => setWeight(e.target.value)}
+                            className="w-full px-4 py-2 border border-outline-variant/50 rounded-lg focus:outline-none focus:border-primary"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-body-sm font-medium text-on-surface mb-1">Carat (Optional)</label>
+                          <input
+                            type="text"
+                            placeholder="e.g. 22K"
+                            value={carat}
+                            onChange={(e) => setCarat(e.target.value)}
+                            className="w-full px-4 py-2 border border-outline-variant/50 rounded-lg focus:outline-none focus:border-primary"
+                          />
+                        </div>
                       </div>
                       <div>
-                        <span className="text-body-sm text-primary">Click to select primary image</span>
+                        <label className="block text-body-sm font-medium text-on-surface mb-1">Primary Image (Required)</label>
                         <input
                           type="text"
                           placeholder="Paste an external image URL here (ImgBB, Cloudinary, etc.)"
@@ -731,45 +732,44 @@ for (let i = 0; i < additionalFiles.length; i++) {
                             ) : (
                               <ImageIcon className="w-8 h-8 text-on-surface-variant mb-2" />
                             )}
-                            <span className="text-body-sm text-primary">Click to select image (Max 10MB)</span>
+                            <span className="text-body-sm text-primary">Click to select primary image</span>
                           </label>
                         </div>
                       </div>
+
                       <div>
-  <label className="block text-body-sm font-medium text-on-surface mb-1">
-    Additional Images (Max 4)
-  </label>
-  <div className="border border-dashed border-outline-variant/50 rounded-lg p-4 text-center cursor-pointer hover:bg-surface-container-low transition-colors">
-    <input
-      type="file"
-      accept="image/*"
-      multiple
-      onChange={handleAdditionalImagesChange}
-      className="hidden"
-      id="additionalImagesUpload"
-    />
-    <label htmlFor="additionalImagesUpload" className="cursor-pointer flex flex-col items-center">
-      <ImageIcon className="w-8 h-8 text-on-surface-variant mb-2" />
-      <span className="text-body-sm text-primary">Click to select up to 4 more images</span>
-    </label>
-  </div>
-  {additionalPreviews.length > 0 && (
-    <div className="grid grid-cols-4 gap-2 mt-2">
-      {additionalPreviews.map((src, i) => (
-        <div key={i} className="relative">
-          <img src={src} className="h-16 w-full object-cover rounded-lg" />
-          <button
-            type="button"
-            onClick={() => removeAdditionalImage(i)}
-            className="absolute -top-1 -right-1 bg-error text-white rounded-full w-4 h-4 flex items-center justify-center text-xs"
-          >
-            ×
-          </button>
-        </div>
-      ))}
-    </div>
-  )}
-</div>
+                        <label className="block text-body-sm font-medium text-on-surface mb-1">Additional Images (Optional)</label>
+                        <div className="border border-dashed border-outline-variant/50 rounded-lg p-4 text-center cursor-pointer hover:bg-surface-container-low transition-colors mb-3">
+                          <input
+                            type="file"
+                            accept="image/*"
+                            multiple
+                            onChange={handleAdditionalImagesChange}
+                            className="hidden"
+                            id="additionalImagesUpload"
+                          />
+                          <label htmlFor="additionalImagesUpload" className="cursor-pointer flex flex-col items-center">
+                            <ImageIcon className="w-6 h-6 text-on-surface-variant mb-2" />
+                            <span className="text-body-sm text-primary">Select additional images</span>
+                          </label>
+                        </div>
+                        {additionalPreviews.length > 0 && (
+                          <div className="flex flex-wrap gap-2">
+                            {additionalPreviews.map((preview, idx) => (
+                              <div key={idx} className="relative group w-16 h-16 rounded overflow-hidden border border-outline/30 luxury-shadow">
+                                <img src={preview} alt="Additional Preview" className="w-full h-full object-cover" />
+                                <button
+                                  type="button"
+                                  onClick={() => removeAdditionalImage(idx)}
+                                  className="absolute inset-0 bg-black/50 text-white opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity"
+                                >
+                                  <Trash2 className="w-4 h-4" />
+                                </button>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
                       <button
                         type="submit"
                         disabled={isSubmitting}
@@ -781,7 +781,7 @@ for (let i = 0; i < additionalFiles.length; i++) {
                              {uploadProgress !== null ? `Uploading... ${Math.round(uploadProgress)}%` : 'Processing...'}
                           </div>
                         ) : (
-                          <><Plus className="w-5 h-5" /> Add Jewellery </>
+                          <><Plus className="w-5 h-5" /> Add Jewelry </>
                         )}
                       </button>
                     </form>
