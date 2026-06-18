@@ -1,85 +1,19 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import { ArrowLeft, Loader2 } from 'lucide-react';
+import { ArrowLeft, Loader2, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { api } from '../lib/api';
-
-function JewelryImageCarousel({ mainImage, additionalImages, title }: { 
-  mainImage: string; 
-  additionalImages: string[];
-  title: string;
-}) {
-  const allImages = [mainImage, ...additionalImages].filter(Boolean);
-  const [current, setCurrent] = useState(0);
-  const touchStartX = useRef<number | null>(null);
-
-  const prev = () => setCurrent(i => (i === 0 ? allImages.length - 1 : i - 1));
-  const next = () => setCurrent(i => (i === allImages.length - 1 ? 0 : i + 1));
-
-  const handleTouchStart = (e: React.TouchEvent) => {
-    touchStartX.current = e.touches[0].clientX;
-  };
-
-  const handleTouchEnd = (e: React.TouchEvent) => {
-    if (touchStartX.current === null) return;
-    const diff = touchStartX.current - e.changedTouches[0].clientX;
-    if (diff > 50) next();
-    else if (diff < -50) prev();
-    touchStartX.current = null;
-  };
-
-  if (allImages.length === 1) {
-    return (
-      <img 
-        src={mainImage} 
-        alt={title} 
-        className="w-full h-full object-contain mix-blend-multiply transition-transform duration-700 group-hover:scale-105"
-      />
-    );
-  }
-
-  return (
-    <div 
-      className="relative w-full h-full"
-      onTouchStart={handleTouchStart}
-      onTouchEnd={handleTouchEnd}
-    >
-      <img 
-        src={allImages[current]} 
-        alt={`${title} ${current + 1}`} 
-        className="w-full h-full object-contain mix-blend-multiply transition-opacity duration-300"
-      />
-      <button 
-        onClick={prev} 
-        className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 rounded-full w-7 h-7 flex items-center justify-center shadow text-primary hover:bg-white transition-colors text-lg font-bold"
-      >
-        ‹
-      </button>
-      <button 
-        onClick={next} 
-        className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 rounded-full w-7 h-7 flex items-center justify-center shadow text-primary hover:bg-white transition-colors text-lg font-bold"
-      >
-        ›
-      </button>
-      <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-1">
-        {allImages.map((_, i) => (
-          <button 
-            key={i} 
-            onClick={() => setCurrent(i)}
-            className={`w-1.5 h-1.5 rounded-full transition-colors ${i === current ? 'bg-primary' : 'bg-outline-variant'}`}
-          />
-        ))}
-      </div>
-    </div>
-  );
-}
 
 export default function CollectionPage() {
   const { id } = useParams();
   const [collectionData, setCollectionData] = useState<any>(null);
   const [jewelries, setJewelries] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+
+  // Modal state
+  const [selectedItem, setSelectedItem] = useState<any>(null);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   useEffect(() => {
     async function fetchData() {
@@ -111,6 +45,37 @@ export default function CollectionPage() {
     }
     fetchData();
   }, [id]);
+
+  const openImageModal = (item: any) => {
+    setSelectedItem(item);
+    setCurrentImageIndex(0);
+  };
+
+  const closeImageModal = () => {
+    setSelectedItem(null);
+  };
+
+  const getImages = (item: any) => {
+    const images = [item.imageUrl];
+    if (item.imageUrls && Array.isArray(item.imageUrls)) {
+      images.push(...item.imageUrls);
+    }
+    return images;
+  };
+
+  const nextImage = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!selectedItem) return;
+    const images = getImages(selectedItem);
+    setCurrentImageIndex((prev) => (prev + 1) % images.length);
+  };
+
+  const prevImage = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!selectedItem) return;
+    const images = getImages(selectedItem);
+    setCurrentImageIndex((prev) => (prev - 1 + images.length) % images.length);
+  };
 
   if (loading) {
     return (
@@ -178,10 +143,14 @@ export default function CollectionPage() {
               />
             </div>
             <div>
+              <div className="mb-8 p-4 bg-surface-container-low rounded-full inline-block">
+                {collectionData.icon}
+              </div>
               <h2 className="text-headline-md text-primary mb-6 font-headline-md">About the Collection</h2>
               <p className="text-body-lg text-on-surface-variant mb-8 leading-relaxed">
                 {collectionData.description}
               </p>
+              
               <div className="space-y-6">
                  <h3 className="text-title-lg text-on-surface">Explore this collection in-store</h3>
                  <p className="text-body-md text-on-surface-variant">
@@ -217,37 +186,35 @@ export default function CollectionPage() {
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
               {jewelries.map((item) => (
-                <div key={item.id} className="bg-white rounded-2xl luxury-shadow overflow-hidden group">
-                  <div className="relative aspect-square overflow-hidden bg-surface-container border-b border-outline-variant/30">
-                    <JewelryImageCarousel
-                      mainImage={item.imageUrl}
-                      additionalImages={item.imageUrls || []}
-                      title={item.title}
+                <div key={item.id} onClick={() => openImageModal(item)} className="bg-white rounded-2xl luxury-shadow overflow-hidden group cursor-pointer">
+                  <div className="relative aspect-square overflow-hidden bg-surface-container border-b border-outline-variant/30 flex items-center justify-center p-4">
+                    <img 
+                      src={item.imageUrl} 
+                      alt={item.title} 
+                      className="w-full h-full object-contain mix-blend-multiply transition-transform duration-700 group-hover:scale-105"
                     />
+                    {getImages(item).length > 1 && (
+                      <div className="absolute bottom-2 right-2 bg-black/60 text-white text-xs px-2 py-1 rounded-full backdrop-blur-sm">
+                        1/{getImages(item).length}
+                      </div>
+                    )}
                   </div>
                   <div className="p-6">
                     <h3 className="text-title-lg text-primary mb-2 line-clamp-1">{item.title}</h3>
                     <p className="text-body-md text-on-surface-variant line-clamp-2 mb-4 h-11">
                       {item.description}
                     </p>
-                    <div className="text-label-lg text-luxury-gold font-medium">
-                      {item.price ? ('₹' + item.price.toLocaleString()) : 'Price on request'}
-                    
-</div>
-{(item.weightGrams || item.weightCarats) && (
-  <div className="flex gap-3 mt-2">
-    {item.weightGrams && (
-      <span className="text-xs text-on-surface-variant bg-surface-container px-2 py-1 rounded-full">
-        ⚖️ {item.weightGrams}g
-      </span>
-    )}
-    {item.weightCarats && (
-      <span className="text-xs text-on-surface-variant bg-surface-container px-2 py-1 rounded-full">
-        💎 {item.weightCarats}KT
-      </span>
-    )}
-  </div>
-)}
+                    <div className="flex flex-wrap items-center justify-between gap-2 text-on-surface-variant font-medium text-label-lg">
+                      <div className="text-luxury-gold font-medium">
+                        {item.price ? `₹${item.price.toLocaleString()}` : 'Price on request'}
+                      </div>
+                      {(item.weight || item.carat) && (
+                        <div className="flex items-center gap-2 text-xs">
+                          {item.weight && <span className="bg-surface-container-high px-2 py-1 rounded">{item.weight}</span>}
+                          {item.carat && <span className="bg-surface-container-high px-2 py-1 rounded">{item.carat}</span>}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               ))}
@@ -257,6 +224,74 @@ export default function CollectionPage() {
       </section>
 
       <Footer />
+
+      {/* Image Modal */}
+      {selectedItem && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm p-4" onClick={closeImageModal}>
+          <button 
+            className="absolute top-4 right-4 text-white/70 hover:text-white transition-colors p-2"
+            onClick={closeImageModal}
+          >
+            <X className="w-8 h-8" />
+          </button>
+          
+          <div className="relative w-full max-w-5xl aspect-square sm:aspect-video flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
+            {getImages(selectedItem).length > 1 && (
+              <button 
+                onClick={prevImage}
+                className="absolute left-2 sm:left-4 z-10 p-2 sm:p-3 bg-black/50 hover:bg-black/80 text-white rounded-full backdrop-blur-md transition-all luxury-shadow"
+              >
+                <ChevronLeft className="w-6 h-6 sm:w-8 sm:h-8" />
+              </button>
+            )}
+            
+            <img 
+              src={getImages(selectedItem)[currentImageIndex]} 
+              alt={selectedItem.title}
+              className="max-w-full max-h-full object-contain"
+            />
+            
+            {getImages(selectedItem).length > 1 && (
+              <button 
+                onClick={nextImage}
+                className="absolute right-2 sm:right-4 z-10 p-2 sm:p-3 bg-black/50 hover:bg-black/80 text-white rounded-full backdrop-blur-md transition-all luxury-shadow"
+              >
+                <ChevronRight className="w-6 h-6 sm:w-8 sm:h-8" />
+              </button>
+            )}
+
+            {getImages(selectedItem).length > 1 && (
+              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 px-3 py-2 bg-black/50 rounded-full backdrop-blur-md">
+                {getImages(selectedItem).map((_, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setCurrentImageIndex(idx)}
+                    className={`w-2 h-2 rounded-full transition-all ${idx === currentImageIndex ? 'bg-white scale-125' : 'bg-white/50'}`}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+          
+          <div className="absolute bottom-8 left-0 right-0 text-center pointer-events-none px-4">
+            <h3 className="text-white text-title-lg sm:text-headline-md font-medium mb-2 drop-shadow-md">{selectedItem.title}</h3>
+            <div className="flex flex-wrap justify-center items-center gap-3">
+              {selectedItem.price && (
+                <p className="text-luxury-gold text-label-lg font-medium drop-shadow-md text-xl">₹{selectedItem.price.toLocaleString()}</p>
+              )}
+              {(selectedItem.weight || selectedItem.carat) && (
+                <div className="flex gap-2 text-white/80 text-sm font-medium drop-shadow-md pointer-events-auto">
+                  {selectedItem.weight && <span className="bg-black/40 px-2 py-1 rounded-md border border-white/10">{selectedItem.weight}</span>}
+                  {selectedItem.carat && <span className="bg-black/40 px-2 py-1 rounded-md border border-white/10">{selectedItem.carat}</span>}
+                </div>
+              )}
+            </div>
+            {selectedItem.description && (
+              <p className="mt-2 text-white/90 text-sm max-w-2xl mx-auto drop-shadow-md line-clamp-2">{selectedItem.description}</p>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
