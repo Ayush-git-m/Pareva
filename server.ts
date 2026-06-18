@@ -62,7 +62,7 @@ async function startServer() {
   app.post("/api/settings", requireAuth, async (req: AuthRequest, res) => {
     try {
       const user = req.user;
-      if (user?.email !== 'ayushclasses10@gmail.com') {
+      if (user?.email !== 'ayushclasses10@gmail.com' && user?.email !== 'shreeparevajewellers@gmail.com') {
          res.status(403).json({ error: "Forbidden" });
          return;
       }
@@ -86,7 +86,7 @@ async function startServer() {
   app.post("/api/collections", requireAuth, async (req: AuthRequest, res) => {
     try {
       const user = req.user;
-      if (user?.email !== 'ayushclasses10@gmail.com') {
+      if (user?.email !== 'ayushclasses10@gmail.com' && user?.email !== 'shreeparevajewellers@gmail.com') {
          res.status(403).json({ error: "Forbidden" });
          return;
       }
@@ -103,7 +103,7 @@ async function startServer() {
   app.post("/api/jewelries", requireAuth, async (req: AuthRequest, res) => {
     try {
       const user = req.user;
-      if (user?.email !== 'ayushclasses10@gmail.com') {
+      if (user?.email !== 'ayushclasses10@gmail.com' && user?.email !== 'shreeparevajewellers@gmail.com') {
          res.status(403).json({ error: "Forbidden" });
          return;
       }
@@ -120,7 +120,7 @@ async function startServer() {
   app.post("/api/hero-banners", requireAuth, async (req: AuthRequest, res) => {
     try {
       const user = req.user;
-      if (user?.email !== 'ayushclasses10@gmail.com') {
+      if (user?.email !== 'ayushclasses10@gmail.com' && user?.email !== 'shreeparevajewellers@gmail.com') {
          res.status(403).json({ error: "Forbidden" });
          return;
       }
@@ -137,7 +137,7 @@ async function startServer() {
   app.delete("/api/collections/:id", requireAuth, async (req: AuthRequest, res) => {
     try {
       const user = req.user;
-      if (user?.email !== 'ayushclasses10@gmail.com') {
+      if (user?.email !== 'ayushclasses10@gmail.com' && user?.email !== 'shreeparevajewellers@gmail.com') {
          res.status(403).json({ error: "Forbidden" });
          return;
       }
@@ -154,7 +154,7 @@ async function startServer() {
   app.delete("/api/jewelries/:id", requireAuth, async (req: AuthRequest, res) => {
     try {
       const user = req.user;
-      if (user?.email !== 'ayushclasses10@gmail.com') {
+      if (user?.email !== 'ayushclasses10@gmail.com' && user?.email !== 'shreeparevajewellers@gmail.com') {
          res.status(403).json({ error: "Forbidden" });
          return;
       }
@@ -171,7 +171,7 @@ async function startServer() {
   app.delete("/api/hero-banners/:id", requireAuth, async (req: AuthRequest, res) => {
     try {
       const user = req.user;
-      if (user?.email !== 'ayushclasses10@gmail.com') {
+      if (user?.email !== 'ayushclasses10@gmail.com' && user?.email !== 'shreeparevajewellers@gmail.com') {
          res.status(403).json({ error: "Forbidden" });
          return;
       }
@@ -191,7 +191,7 @@ async function startServer() {
   app.post("/api/hero-banners/:id/toggle", requireAuth, async (req: AuthRequest, res) => {
     try {
       const user = req.user;
-      if (user?.email !== 'ayushclasses10@gmail.com') {
+      if (user?.email !== 'ayushclasses10@gmail.com' && user?.email !== 'shreeparevajewellers@gmail.com') {
          res.status(403).json({ error: "Forbidden" });
          return;
       }
@@ -209,7 +209,7 @@ async function startServer() {
   app.post("/api/hero-banners/reorder", requireAuth, async (req: AuthRequest, res) => {
     try {
       const user = req.user;
-      if (user?.email !== 'ayushclasses10@gmail.com') {
+      if (user?.email !== 'ayushclasses10@gmail.com' && user?.email !== 'shreeparevajewellers@gmail.com') {
          res.status(403).json({ error: "Forbidden" });
          return;
       }
