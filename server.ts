@@ -188,24 +188,6 @@ async function startServer() {
   // Toggle banner status
   // Reorder banner
   
-  app.post("/api/hero-banners/:id/toggle", requireAuth, async (req: AuthRequest, res) => {
-    try {
-      const user = req.user;
-      if (user?.email !== 'ayushclasses10@gmail.com' && user?.email !== 'shreeparevajewellers@gmail.com') {
-         res.status(403).json({ error: "Forbidden" });
-         return;
-      }
-
-      const { id } = req.params;
-      const { enabled } = req.body;
-      const result = await db.update(heroBanners).set({ enabled }).where(eq(heroBanners.id, parseInt(id))).returning();
-      res.json(result[0]);
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: "Failed to toggle banner" });
-    }
-  });
-  
   app.post("/api/hero-banners/reorder", requireAuth, async (req: AuthRequest, res) => {
     try {
       const user = req.user;
@@ -222,6 +204,24 @@ async function startServer() {
     } catch (error) {
       console.error(error);
       res.status(500).json({ error: "Failed to reorder" });
+    }
+  });
+
+  app.post("/api/hero-banners/:id/toggle", requireAuth, async (req: AuthRequest, res) => {
+    try {
+      const user = req.user;
+      if (user?.email !== 'ayushclasses10@gmail.com' && user?.email !== 'shreeparevajewellers@gmail.com') {
+         res.status(403).json({ error: "Forbidden" });
+         return;
+      }
+
+      const { id } = req.params;
+      const { enabled } = req.body;
+      const result = await db.update(heroBanners).set({ enabled }).where(eq(heroBanners.id, parseInt(id))).returning();
+      res.json(result[0]);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Failed to toggle banner" });
     }
   });
 
