@@ -231,7 +231,7 @@ export default function CollectionPage() {
                       {item.description}
                     </p>
                     <div className="text-label-lg text-luxury-gold font-medium">
-                      {item.price ? `₹${item.price.toLocaleString()}` : 'Price on request'}
+                      {item.price ? ('₹' + item.price.toLocaleString()) : 'Price on request'}
                     </div>
 </div>
 {(item.weightGrams || item.weightCarats) && (
