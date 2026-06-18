@@ -108,8 +108,8 @@ async function startServer() {
          return;
       }
 
-      const { title, description, collectionId, imageUrl, imageUrls, price, firebaseId, weightGrams, weightCarats } = req.body;
-      const result = await db.insert(jewelries).values({ title, description, collectionId, imageUrl, imageUrls, price, firebaseId, weightGrams, weightCarats }).returning();
+      const { title, description, collectionId, imageUrl, imageUrls, price, firebaseId, weight, carat } = req.body;
+      const result = await db.insert(jewelries).values({ title, description, collectionId, imageUrl, imageUrls, price, firebaseId, weight, carat }).returning();
       res.json(result[0]);
     } catch (error) {
       console.error("DB error:", error);
