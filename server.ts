@@ -37,7 +37,7 @@ async function startServer() {
 
   app.get("/api/hero-banners", async (req, res) => {
     try {
-      const result = await db.select().from(heroBanners).orderBy(desc(heroBanners.createdAt));
+      const result = await db.select().from(heroBanners).orderBy(heroBanners.order);
       res.json(result);
     } catch (error) {
       console.error(error);
