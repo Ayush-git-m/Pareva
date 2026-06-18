@@ -13,6 +13,10 @@ export default function GenderPage() {
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
+  // Swipe state
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
+
   const title = type === 'him' ? 'For Him' : 'For Her';
 
   const openImageModal = (item: any) => {
@@ -31,17 +35,41 @@ export default function GenderPage() {
     return [item.imageUrl, ...(item.imageUrls || [])].filter(Boolean);
   };
 
-  const nextImage = (e: React.MouseEvent) => {
-    e.stopPropagation();
+  const nextImage = (e?: React.MouseEvent | React.TouchEvent) => {
+    if (e) e.stopPropagation();
     if (selectedItem) {
       setCurrentImageIndex((prev) => (prev + 1) % getImages(selectedItem).length);
     }
   };
 
-  const prevImage = (e: React.MouseEvent) => {
-    e.stopPropagation();
+  const prevImage = (e?: React.MouseEvent | React.TouchEvent) => {
+    if (e) e.stopPropagation();
     if (selectedItem) {
       setCurrentImageIndex((prev) => (prev === 0 ? getImages(selectedItem).length - 1 : prev - 1));
+    }
+  };
+
+  const minSwipeDistance = 50;
+
+  const onTouchStart = (e: React.TouchEvent) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const onTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+    if (isLeftSwipe) {
+      nextImage();
+    }
+    if (isRightSwipe) {
+      prevImage();
     }
   };
 
@@ -228,7 +256,12 @@ export default function GenderPage() {
           
           <div className="bg-white rounded-2xl overflow-hidden shadow-2xl w-full max-w-6xl max-h-full flex flex-col md:flex-row relative" onClick={(e) => e.stopPropagation()}>
             {/* Left: Image Carousel */}
-            <div className="relative w-full md:w-3/5 bg-surface-container aspect-square md:aspect-auto md:min-h-[600px] flex items-center justify-center group">
+            <div 
+              className="relative w-full md:w-3/5 bg-surface-container aspect-square md:aspect-auto md:min-h-[600px] flex items-center justify-center group"
+              onTouchStart={onTouchStart}
+              onTouchMove={onTouchMove}
+              onTouchEnd={onTouchEnd}
+            >
               {getImages(selectedItem).length > 1 && (
                 <button 
                   onClick={prevImage}
