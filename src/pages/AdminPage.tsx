@@ -1158,6 +1158,7 @@ const handleSaveEdit = async () => {
     <Trash2 className="w-4 h-4" />
   </button>
 </div>
+</div>
                           <div className="p-4 flex-1 flex flex-col">
                             <h3 className="text-title-md text-on-surface font-semibold mb-2">{cat.title}</h3>
                             <p className="text-body-sm text-on-surface-variant line-clamp-2">{cat.description}</p>
