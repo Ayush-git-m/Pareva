@@ -113,7 +113,7 @@ async function startServer() {
       res.json(result[0]);
     } catch (error) {
       console.error("DB error:", error);
-      res.status(500).json({ error: "Failed to insert jewelry" });
+      res.status(500).json({ error: "Failed to insert jewellery" });
     }
   });
 

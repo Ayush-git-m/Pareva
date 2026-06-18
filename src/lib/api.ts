@@ -42,7 +42,7 @@ export const api = {
         if (!res.ok) throw new Error('Failed to add');
         return res.json();
     },
-    addJewelry: async (data: any) => {
+    addJewellery: async (data: any) => {
         const res = await fetch('/api/jewelries', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${await getToken()}` },
@@ -61,7 +61,7 @@ export const api = {
         return res.json();
     },
     deleteItem: async (type: string, id: number) => {
-        const endpoint = type === 'jewelry' ? 'jewelries' : type === 'category' ? 'collections' : 'hero-banners';
+        const endpoint = type === 'jewellery' ? 'jewelries' : type === 'category' ? 'collections' : 'hero-banners';
         const res = await fetch(`/api/${endpoint}/${id}`, {
             method: 'DELETE',
             headers: { 'Authorization': `Bearer ${await getToken()}` }

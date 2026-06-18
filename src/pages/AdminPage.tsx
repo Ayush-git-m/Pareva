@@ -76,12 +76,14 @@ export default function AdminPage() {
   const [forHimCollectionIds, setForHimCollectionIds] = useState<string[]>([]);
   const [forHerCollectionIds, setForHerCollectionIds] = useState<string[]>([]);
   
-  // Jewelry State
+  // Jewellery State
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [collectionId, setCollectionId] = useState('');
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState('');
+  const [additionalFiles, setAdditionalFiles] = useState<File[]>([]);
+  const [additionalPreviews, setAdditionalPreviews] = useState<string[]>([]);
   const [price, setPrice] = useState('');
   
   // Category State
@@ -106,7 +108,7 @@ export default function AdminPage() {
   const [error, setError] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
   const [uploadProgress, setUploadProgress] = useState<number | null>(null);
-  const [itemToDelete, setItemToDelete] = useState<{ id: string, type: 'jewelry' | 'category' | 'banner' } | null>(null);
+  const [itemToDelete, setItemToDelete] = useState<{ id: string, type: 'jewellery' | 'category' | 'banner' } | null>(null);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -216,6 +218,7 @@ export default function AdminPage() {
       reader.readAsDataURL(file);
     }
   };
+  
 
   const handleCatImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -228,7 +231,60 @@ export default function AdminPage() {
       reader.readAsDataURL(file);
     }
   };
+const handleAdditionalImagesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    const validFiles = files.filter(checkFileSize);
+    
+    if (validFiles.length > 0) {
+      setAdditionalFiles(prev => [...prev, ...validFiles]);
+      
+      validFiles.forEach(file => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setAdditionalPreviews(prev => [...prev, reader.result as string]);
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+  };
+const handleAdditionalImagesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    const validFiles = files.filter(checkFileSize);
+    
+    if (validFiles.length > 0) {
+      setAdditionalFiles(prev => [...prev, ...validFiles]);
+      
+      validFiles.forEach(file => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setAdditionalPreviews(prev => [...prev, reader.result as string]);
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+  };
 
+  const handleAdditionalImagesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    const validFiles = files.filter(checkFileSize);
+    
+    if (validFiles.length > 0) {
+      setAdditionalFiles(prev => [...prev, ...validFiles]);
+
+      validFiles.forEach(file => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setAdditionalPreviews(prev => [...prev, reader.result as string]);
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+  };
+      
+  const removeAdditionalImage = (index: number) => {
+    setAdditionalFiles(prev => prev.filter((_, i) => i !== index));
+    setAdditionalPreviews(prev => prev.filter((_, i) => i !== index));
+  };
   const handleBannerImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file && checkFileSize(file)) {
@@ -274,7 +330,7 @@ const handleVideoFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     });
 };    
 
-  const handleAddJewelry = async (e: React.FormEvent) => {
+  const handleAddJewellery = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!title || !description || (!imagePreview && !imageFile)) {
       setError('Please fill in all required fields and upload an image.');
@@ -289,34 +345,42 @@ const handleVideoFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 
       if (imageFile) {
         const compressedBlob = await compressImage(imageFile);
-        const fileName = imageFile.name.split('.')[0] + '.webp';
+        
         finalImageUrl = await uploadImageToCloudinary(imageFile);
       }
+    const finalAdditionalUrls: string[] = [];
+      for (let i = 0; i < additionalFiles.length; i++) {
+        const compressedBlob = await compressImage(additionalFiles[i]);
+        const b64 = await blobToBase64(compressedBlob);
+        finalAdditionalUrls.push(b64);
+      }
 
-      const newJewelry: any = {
+      const newJewellery: any = {
         title,
         description,
         collectionId,
         imageUrl: finalImageUrl,
+        imageUrls: finalAdditionalUrls.length > 0 ? finalAdditionalUrls : null,
       };
       if (price) {
-        newJewelry.price = Number(price);
+        newJewellery.price = Number(price);
       }
-      await api.addJewelry(newJewelry);
+      await api.addJewellery(newJewellery);
       
       setTitle('');
       setDescription('');
       setPrice('');
       setImageFile(null);
       setImagePreview('');
-      
-      setSuccessMsg('Jewelry uploaded and added successfully.');
+      setAdditionalFiles([]);
+      setAdditionalPreviews([]);
+      setSuccessMsg('Jewellery uploaded and added successfully.');
       setTimeout(() => setSuccessMsg(''), 4000);
       
       await fetchData();
     } catch (err: any) {
       console.error(err);
-      setError(err.message || 'Error adding jewelry');
+      setError(err.message || 'Error adding jewellery');
     } finally {
       setIsSubmitting(false);
     }
@@ -430,7 +494,7 @@ const handleVideoFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
   };
 
   const handleDeleteJ = async (id: string) => {
-    setItemToDelete({ id, type: 'jewelry' });
+    setItemToDelete({ id, type: 'jewellery' });
   };
 
   const handleDeleteC = async (id: string) => {
@@ -606,8 +670,8 @@ const handleVideoFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
                 <div className="lg:col-span-1">
                   <div className="bg-white p-6 rounded-2xl luxury-shadow sticky top-24">
-                    <h2 className="text-title-lg text-primary mb-6">Add New Jewelry</h2>
-                    <form onSubmit={handleAddJewelry} className="space-y-4">
+                    <h2 className="text-title-lg text-primary mb-6">Add New Jewellery</h2>
+                    <form onSubmit={handleAddJewellery} className="space-y-4">
                       <div>
                         <label className="block text-body-sm font-medium text-on-surface mb-1">Title</label>
                         <input
@@ -652,7 +716,7 @@ const handleVideoFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
                         />
                       </div>
                       <div>
-                        <label className="block text-body-sm font-medium text-on-surface mb-1">Image URL or File Upload (limit 10MB auto-compressed)</label>
+                        <span className="text-body-sm text-primary">Click to select primary image</span>
                         <input
                           type="text"
                           placeholder="Paste an external image URL here (ImgBB, Cloudinary, etc.)"
@@ -690,7 +754,7 @@ const handleVideoFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
                              {uploadProgress !== null ? `Uploading... ${Math.round(uploadProgress)}%` : 'Processing...'}
                           </div>
                         ) : (
-                          <><Plus className="w-5 h-5" /> Add Jewelry </>
+                          <><Plus className="w-5 h-5" /> Add Jewellery </>
                         )}
                       </button>
                     </form>

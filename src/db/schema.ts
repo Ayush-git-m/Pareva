@@ -7,6 +7,7 @@ export const collections = pgTable('collections', {
   title: text('title').notNull(),
   description: text('description').notNull(),
   imageUrl: text('image_url').notNull(),
+  imageUrls: text('image_urls').array(),
   createdAt: timestamp('created_at').defaultNow(),
 });
 
@@ -17,6 +18,7 @@ export const jewelries = pgTable('jewelries', {
   description: text('description').notNull(),
   collectionId: text('collection_id').notNull(),
   imageUrl: text('image_url').notNull(),
+  imageUrls: text('image_urls').array(),
   price: integer('price'), // Optional price
   createdAt: timestamp('created_at').defaultNow(),
 });

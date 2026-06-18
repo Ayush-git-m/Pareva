@@ -104,7 +104,7 @@ export default function Sections() {
                 <CheckCircle className="w-6 h-6 text-luxury-gold mt-1 shrink-0" />
                 <div>
                   <h4 className="text-base md:text-label-lg text-on-surface mb-1 font-semibold">
-                    Customised Design Studio
+                    Customized Design Studio
                   </h4>
                   <p className="text-sm md:text-body-md text-on-surface-variant">
                     Bring your vision to life with our expert artisans and

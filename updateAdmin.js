@@ -25,20 +25,20 @@ content = content.replace(/const fetchData = async \(\) => \{[\s\S]*?\} catch \(
 
     } catch (err: any) {`);
 
-// Replace jewelry upload
+// Replace jewellery upload
 content = content.replace(/const fileRef = ref\(storage, \`jewelries\/\$\{Date\.now\(\)\}_\$\{fileName\}\`\);[\s\S]*?setUploadProgress\(null\);/m, `finalImageUrl = await blobToBase64(compressedBlob);`);
 
-// Replace newJewelry addDoc
-content = content.replace(/const newJewelry: any = \{[\s\S]*?\};\s*if \(price\) \{\s*newJewelry\.price = Number\(price\);\s*\}\s*await addDoc\(collection\(db, 'jewelries'\), newJewelry\);/m, `const newJewelry: any = {
+// Replace newJewellery addDoc
+content = content.replace(/const newJewellery: any = \{[\s\S]*?\};\s*if \(price\) \{\s*newJewellery\.price = Number\(price\);\s*\}\s*await addDoc\(collection\(db, 'jewelries'\), newJewellery\);/m, `const newJewellery: any = {
         title,
         description,
         collectionId,
         imageUrl: finalImageUrl,
       };
       if (price) {
-        newJewelry.price = Number(price);
+        newJewellery.price = Number(price);
       }
-      await api.addJewelry(newJewelry);`);
+      await api.addJewellery(newJewellery);`);
 
 
 // Replace category upload
@@ -68,7 +68,7 @@ content = content.replace(/const newBanner = \{[\s\S]*?\};\s*await addDoc\(colle
       await api.addBanner(newBanner);`);
 
 // Delete
-content = content.replace(/if \(itemToDelete.type === 'jewelry'\) await deleteDoc\(doc\(db, 'jewelries', itemToDelete\.id\)\);\s*else if \(itemToDelete\.type === 'category'\) await deleteDoc\(doc\(db, 'collections', itemToDelete\.id\)\);\s*else if \(itemToDelete\.type === 'banner'\) await deleteDoc\(doc\(db, 'heroBanners', itemToDelete\.id\)\);/m, `await api.deleteItem(itemToDelete.type, itemToDelete.id);`);
+content = content.replace(/if \(itemToDelete.type === 'jewellery'\) await deleteDoc\(doc\(db, 'jewelries', itemToDelete\.id\)\);\s*else if \(itemToDelete\.type === 'category'\) await deleteDoc\(doc\(db, 'collections', itemToDelete\.id\)\);\s*else if \(itemToDelete\.type === 'banner'\) await deleteDoc\(doc\(db, 'heroBanners', itemToDelete\.id\)\);/m, `await api.deleteItem(itemToDelete.type, itemToDelete.id);`);
 
 // Toggle Banner
 content = content.replace(/await updateDoc\(doc\(db, 'heroBanners', id\), \{\s*enabled: !banner.enabled,\s*\}\);/m, `await api.toggleBanner(id, !banner.enabled);`);

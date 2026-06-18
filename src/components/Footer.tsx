@@ -88,10 +88,10 @@ export default function Footer() {
             </div>
             <ul className="space-y-5 text-on-surface text-sm">
               <li>
-                <span className="hover:text-luxury-gold transition-colors cursor-default">Gold jewelry</span>
+                <span className="hover:text-luxury-gold transition-colors cursor-default">Gold jewellery</span>
               </li>
               <li>
-                <span className="hover:text-luxury-gold transition-colors cursor-default">Silver jewelry</span>
+                <span className="hover:text-luxury-gold transition-colors cursor-default">Silver jewellery</span>
               </li>
               <li>
                 <span className="hover:text-luxury-gold transition-colors cursor-default">Men's luxury</span>

@@ -1,8 +1,8 @@
 {
   "entities": {
-    "Jewelry": {
-      "title": "Jewelry Item",
-      "description": "A single piece of jewelry for sale or display.",
+    "Jewellery": {
+      "title": "Jewellery Item",
+      "description": "A single piece of jewellery for sale or display.",
       "type": "object",
       "properties": {
         "title": { "type": "string" },
@@ -16,9 +16,9 @@
     }
   },
   "firestore": {
-    "/jewelries/{jewelryId}": {
-      "schema": "Jewelry",
-      "description": "Stores individual jewelry items."
+    "/jewelries/{jewelleryId}": {
+      "schema": "Jewellery",
+      "description": "Stores individual jewellery items."
     }
   }
 }
