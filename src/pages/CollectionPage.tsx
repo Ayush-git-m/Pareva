@@ -232,7 +232,7 @@ export default function CollectionPage() {
                     </p>
                     <div className="text-label-lg text-luxury-gold font-medium">
                       {item.price ? ('₹' + item.price.toLocaleString()) : 'Price on request'}
-                    </div>
+                    
 </div>
 {(item.weightGrams || item.weightCarats) && (
   <div className="flex gap-3 mt-2">
