@@ -77,21 +77,6 @@ const [editImagePreview, setEditImagePreview] = useState('');
 const [editImageFile, setEditImageFile] = useState<File | null>(null);
 const [editCollectionId, setEditCollectionId] = useState('');
   
-
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [price, setPrice] = useState('');
-  const [weight, setWeight] = useState('');
-  const [carat, setCarat] = useState('');
-  const [collectionId, setCollectionId] = useState('');
-
-  const [imageFile, setImageFile] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState('');
-
-  const [additionalFiles, setAdditionalFiles] = useState<File[]>([]);
-  const [additionalPreviews, setAdditionalPreviews] = useState<string[]>([]);
-
-
   // Category State
   const [catTitle, setCatTitle] = useState('');
   const [catDescription, setCatDescription] = useState('');
@@ -282,8 +267,7 @@ const handleSaveEdit = async () => {
   try {
     let finalImageUrl = editImagePreview;
     if (editImageFile) {
-      const compressedBlob = await compressImage(editImageFile);
-      finalImageUrl = await blobToBase64(compressedBlob);
+      finalImageUrl = await uploadImageToCloudinary(editImageFile);
     }
 
     if (editType === 'jewellery') {
@@ -563,7 +547,7 @@ const handleSaveEdit = async () => {
   const handleSaveSettings = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setError('');
+    setError(null);
     try {
       await api.updateSettings({
          bridalVideoUrl: bridalVideoUrl,
