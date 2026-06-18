@@ -66,16 +66,16 @@ export default function AdminPage() {
   const [forHerCollectionIds, setForHerCollectionIds] = useState<string[]>([]);
   
   // jewellery State
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [collectionId, setCollectionId] = useState('');
-  const [imageFile, setImageFile] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState('');
-  const [additionalFiles, setAdditionalFiles] = useState<File[]>([]);
-  const [additionalPreviews, setAdditionalPreviews] = useState<string[]>([]);
-  const [price, setPrice] = useState('');
-  const [weight, setWeight] = useState('');
-  const [carat, setCarat] = useState('');
+ const [editingItem, setEditingItem] = useState<any>(null);
+const [editType, setEditType] = useState<'jewellery' | 'category' | null>(null);
+const [editTitle, setEditTitle] = useState('');
+const [editDescription, setEditDescription] = useState('');
+const [editPrice, setEditPrice] = useState('');
+const [editWeight, setEditWeight] = useState('');
+const [editCarat, setEditCarat] = useState('');
+const [editImagePreview, setEditImagePreview] = useState('');
+const [editImageFile, setEditImageFile] = useState<File | null>(null);
+const [editCollectionId, setEditCollectionId] = useState('');
   
   // Category State
   const [catTitle, setCatTitle] = useState('');
@@ -231,7 +231,73 @@ export default function AdminPage() {
     setAdditionalFiles(prev => prev.filter((_, i) => i !== index));
     setAdditionalPreviews(prev => prev.filter((_, i) => i !== index));
   };
+  const openEditModal = (item: any, type: 'jewellery' | 'category') => {
+  setEditingItem(item);
+  setEditType(type);
+  setEditTitle(item.title);
+  setEditDescription(item.description);
+  setEditImagePreview(item.imageUrl);
+  setEditImageFile(null);
+  if (type === 'jewellery') {
+    setEditPrice(item.price ? String(item.price) : '');
+    setEditWeight(item.weight || '');
+    setEditCarat(item.carat || '');
+    setEditCollectionId(item.collectionId ? String(item.collectionId) : '');
+  }
+};
 
+const closeEditModal = () => {
+  setEditingItem(null);
+  setEditType(null);
+};
+
+const handleEditImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const file = e.target.files?.[0];
+  if (file && checkFileSize(file)) {
+    setEditImageFile(file);
+    const reader = new FileReader();
+    reader.onloadend = () => setEditImagePreview(reader.result as string);
+    reader.readAsDataURL(file);
+  }
+};
+
+const handleSaveEdit = async () => {
+  setIsSubmitting(true);
+  setError('');
+  try {
+    let finalImageUrl = editImagePreview;
+    if (editImageFile) {
+      finalImageUrl = await uploadImageToCloudinary(editImageFile);
+    }
+
+    if (editType === 'jewellery') {
+      await api.updateJewellery(String(editingItem.id), {
+        title: editTitle,
+        description: editDescription,
+        price: editPrice ? Number(editPrice) : null,
+        weight: editWeight || null,
+        carat: editCarat || null,
+        imageUrl: finalImageUrl,
+        collectionId: editCollectionId,
+      });
+    } else if (editType === 'category') {
+      await api.updateCollection(String(editingItem.id), {
+        title: editTitle,
+        description: editDescription,
+        imageUrl: finalImageUrl,
+      });
+    }
+
+    setSuccessMsg('Updated successfully!');
+    setTimeout(() => setSuccessMsg(''), 4000);
+    closeEditModal();
+    await fetchData();
+  } catch (err: any) {
+    setError(err.message || 'Error updating item');
+  } finally {
+    setIsSubmitting(false);
+  }
+};
   const handleCatImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file && checkFileSize(file)) {
@@ -579,6 +645,123 @@ export default function AdminPage() {
           </div>
         </div>
       )}
+      {/* Edit Modal */}
+{editingItem && (
+  <div className="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center p-4">
+    <div className="bg-white p-6 rounded-2xl luxury-shadow w-full max-w-md mx-auto max-h-[90vh] overflow-y-auto">
+      <h3 className="text-title-lg text-primary font-semibold mb-4">
+        Edit {editType === 'jewellery' ? 'Jewellery' : 'Category'}
+      </h3>
+
+      <div className="space-y-4">
+        <div>
+          <label className="block text-body-sm font-medium text-on-surface mb-1">Title</label>
+          <input
+            type="text"
+            value={editTitle}
+            onChange={(e) => setEditTitle(e.target.value)}
+            className="w-full px-4 py-2 border border-outline-variant/50 rounded-lg focus:outline-none focus:border-primary"
+          />
+        </div>
+
+        <div>
+          <label className="block text-body-sm font-medium text-on-surface mb-1">Description</label>
+          <textarea
+            value={editDescription}
+            onChange={(e) => setEditDescription(e.target.value)}
+            rows={3}
+            className="w-full px-4 py-2 border border-outline-variant/50 rounded-lg focus:outline-none focus:border-primary resize-none"
+          />
+        </div>
+
+        {editType === 'jewellery' && (
+          <>
+            <div>
+              <label className="block text-body-sm font-medium text-on-surface mb-1">Category</label>
+              <select
+                value={editCollectionId}
+                onChange={(e) => setEditCollectionId(e.target.value)}
+                className="w-full px-4 py-2 border border-outline-variant/50 rounded-lg focus:outline-none focus:border-primary"
+              >
+                {categories.map(c => (
+                  <option key={c.id} value={c.id}>{c.title}</option>
+                ))}
+              </select>
+            </div>
+            <div className="grid grid-cols-3 gap-3">
+              <div>
+                <label className="block text-body-sm font-medium text-on-surface mb-1">Price</label>
+                <input
+                  type="number"
+                  value={editPrice}
+                  onChange={(e) => setEditPrice(e.target.value)}
+                  className="w-full px-4 py-2 border border-outline-variant/50 rounded-lg focus:outline-none focus:border-primary"
+                />
+              </div>
+              <div>
+                <label className="block text-body-sm font-medium text-on-surface mb-1">Weight</label>
+                <input
+                  type="text"
+                  value={editWeight}
+                  onChange={(e) => setEditWeight(e.target.value)}
+                  placeholder="e.g. 5g"
+                  className="w-full px-4 py-2 border border-outline-variant/50 rounded-lg focus:outline-none focus:border-primary"
+                />
+              </div>
+              <div>
+                <label className="block text-body-sm font-medium text-on-surface mb-1">Carat</label>
+                <input
+                  type="text"
+                  value={editCarat}
+                  onChange={(e) => setEditCarat(e.target.value)}
+                  placeholder="e.g. 22KT"
+                  className="w-full px-4 py-2 border border-outline-variant/50 rounded-lg focus:outline-none focus:border-primary"
+                />
+              </div>
+            </div>
+          </>
+        )}
+
+        <div>
+          <label className="block text-body-sm font-medium text-on-surface mb-1">Image</label>
+          <div className="border border-dashed border-outline-variant/50 rounded-lg p-4 text-center cursor-pointer hover:bg-surface-container-low transition-colors">
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleEditImageChange}
+              className="hidden"
+              id="editImageUpload"
+            />
+            <label htmlFor="editImageUpload" className="cursor-pointer flex flex-col items-center">
+              {editImagePreview ? (
+                <img src={editImagePreview} alt="Preview" className="h-32 object-contain mb-2" />
+              ) : (
+                <ImageIcon className="w-8 h-8 text-on-surface-variant mb-2" />
+              )}
+              <span className="text-body-sm text-primary">Click to change image</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div className="flex justify-end gap-4 mt-6">
+        <button
+          onClick={closeEditModal}
+          className="px-4 py-2 text-on-surface-variant hover:text-on-surface font-medium transition-colors"
+        >
+          Cancel
+        </button>
+        <button
+          onClick={handleSaveEdit}
+          disabled={isSubmitting}
+          className="px-6 py-2 bg-primary text-white font-medium rounded-full hover:bg-on-secondary-container transition-colors shadow-sm"
+        >
+          {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Save Changes'}
+        </button>
+      </div>
+    </div>
+  </div>
+)}
       <Header />
       <div className="flex-1 max-w-container-max mx-auto px-gutter py-12 w-full">
         {!user ? (
@@ -813,13 +996,22 @@ export default function AdminPage() {
                               <span className="text-label-md text-primary font-medium">
                                 {item.price ? `₹${item.price.toLocaleString()}` : 'Price on request'}
                               </span>
-                              <button
-                                onClick={() => handleDeleteJ(item.id)}
-                                className="text-error hover:bg-error/10 p-2 rounded-full transition-colors"
-                                title="Delete"
-                              >
-                                <Trash2 className="w-4 h-4" />
-                              </button>
+                              <div className="flex gap-2">
+  <button
+    onClick={() => openEditModal(item, 'jewellery')}
+    className="text-primary hover:bg-primary/10 p-2 rounded-full transition-colors"
+    title="Edit"
+  >
+    ✏️
+  </button>
+  <button
+    onClick={() => handleDeleteJ(item.id)}
+    className="text-error hover:bg-error/10 p-2 rounded-full transition-colors"
+    title="Delete"
+  >
+    <Trash2 className="w-4 h-4" />
+  </button>
+</div>
                             </div>
                           </div>
                         </div>
@@ -934,14 +1126,22 @@ export default function AdminPage() {
                                 <ImageIcon className="w-8 h-8 text-on-surface-variant" />
                               </div>
                             )}
-                            <button
-                              onClick={() => handleDeleteC(cat.id)}
-                              className="absolute top-2 right-2 bg-white/90 text-error hover:bg-error/10 p-2 rounded-full transition-colors luxury-shadow"
-                              title="Delete Category"
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </button>
-                          </div>
+                            <div className="absolute top-2 right-2 flex gap-2">
+  <button
+    onClick={(e) => { e.stopPropagation(); openEditModal(cat, 'category'); }}
+    className="bg-white/90 text-primary hover:bg-primary/10 p-2 rounded-full transition-colors luxury-shadow"
+    title="Edit Category"
+  >
+    ✏️
+  </button>
+  <button
+    onClick={(e) => { e.stopPropagation(); handleDeleteC(cat.id); }}
+    className="bg-white/90 text-error hover:bg-error/10 p-2 rounded-full transition-colors luxury-shadow"
+    title="Delete Category"
+  >
+    <Trash2 className="w-4 h-4" />
+  </button>
+</div>
                           <div className="p-4 flex-1 flex flex-col">
                             <h3 className="text-title-md text-on-surface font-semibold mb-2">{cat.title}</h3>
                             <p className="text-body-sm text-on-surface-variant line-clamp-2">{cat.description}</p>
