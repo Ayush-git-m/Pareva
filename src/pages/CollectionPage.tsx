@@ -233,6 +233,21 @@ export default function CollectionPage() {
                     <div className="text-label-lg text-luxury-gold font-medium">
                       {item.price ? `₹${item.price.toLocaleString()}` : 'Price on request'}
                     </div>
+</div>
+{(item.weightGrams || item.weightCarats) && (
+  <div className="flex gap-3 mt-2">
+    {item.weightGrams && (
+      <span className="text-xs text-on-surface-variant bg-surface-container px-2 py-1 rounded-full">
+        ⚖️ {item.weightGrams}g
+      </span>
+    )}
+    {item.weightCarats && (
+      <span className="text-xs text-on-surface-variant bg-surface-container px-2 py-1 rounded-full">
+        💎 {item.weightCarats}KT
+      </span>
+    )}
+  </div>
+)}
                   </div>
                 </div>
               ))}

@@ -85,6 +85,8 @@ export default function AdminPage() {
   const [additionalFiles, setAdditionalFiles] = useState<File[]>([]);
   const [additionalPreviews, setAdditionalPreviews] = useState<string[]>([]);
   const [price, setPrice] = useState('');
+  const [weightGrams, setWeightGrams] = useState('');
+  const [weightCarats, setWeightCarats] = useState('');
   
   // Category State
   const [catTitle, setCatTitle] = useState('');
@@ -331,6 +333,8 @@ for (let i = 0; i < additionalFiles.length; i++) {
       if (price) {
         newJewellery.price = Number(price);
       }
+      if (weightGrams) newJewellery.weightGrams = Number(weightGrams);   // ← add
+      if (weightCarats) newJewellery.weightCarats = Number(weightCarats); // ← add
       await api.addJewellery(newJewellery);
       
       setTitle('');
@@ -342,6 +346,8 @@ for (let i = 0; i < additionalFiles.length; i++) {
       setAdditionalPreviews([]);
       setSuccessMsg('Jewellery uploaded and added successfully.');
       setTimeout(() => setSuccessMsg(''), 4000);
+      setWeightGrams('');
+      setWeightCarats('');
       
       await fetchData();
     } catch (err: any) {
@@ -680,6 +686,26 @@ for (let i = 0; i < additionalFiles.length; i++) {
                           onChange={(e) => setPrice(e.target.value)}
                           className="w-full px-4 py-2 border border-outline-variant/50 rounded-lg focus:outline-none focus:border-primary"
                         />
+                      </div>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                        <label className="block text-body-sm font-medium text-on-surface mb-1">Weight in Grams (Optional)</label>
+                        <input
+                          type="number"
+                          value={weightGrams}
+                          onChange={(e) => setWeightGrams(e.target.value)}
+                            placeholder="e.g. 5"
+                            className="w-full px-4 py-2 border border-outline-variant/50 rounded-lg focus:outline-none focus:border-primary"/>
+                          </div>
+                          <div>
+                        <label className="block text-body-sm font-medium text-on-surface mb-1">Weight in Carats (Optional)</label>
+                        <input
+                          type="number"
+                          value={weightCarats}
+                          onChange={(e) => setWeightCarats(e.target.value)}
+                          placeholder="e.g. 22"
+                          className="w-full px-4 py-2 border border-outline-variant/50 rounded-lg focus:outline-none focus:border-primary"/>
+                      </div>
                       </div>
                       <div>
                         <span className="text-body-sm text-primary">Click to select primary image</span>

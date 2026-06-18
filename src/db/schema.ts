@@ -20,6 +20,8 @@ export const jewelries = pgTable('jewelries', {
   imageUrl: text('image_url').notNull(),
   imageUrls: text('image_urls').array(),
   price: integer('price'), // Optional price
+  weightGrams: integer('weight_grams'),    
+  weightCarats: integer('weight_carats'),  
   createdAt: timestamp('created_at').defaultNow(),
 });
 
