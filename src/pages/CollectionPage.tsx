@@ -227,68 +227,79 @@ export default function CollectionPage() {
 
       {/* Image Modal */}
       {selectedItem && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm p-4" onClick={closeImageModal}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm p-4 md:p-8" onClick={closeImageModal}>
           <button 
-            className="absolute top-4 right-4 text-white/70 hover:text-white transition-colors p-2"
+            className="absolute top-4 right-4 text-white/70 hover:text-white transition-colors p-2 z-[60]"
             onClick={closeImageModal}
           >
             <X className="w-8 h-8" />
           </button>
           
-          <div className="relative w-full max-w-5xl aspect-square sm:aspect-video flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
-            {getImages(selectedItem).length > 1 && (
-              <button 
-                onClick={prevImage}
-                className="absolute left-2 sm:left-4 z-10 p-2 sm:p-3 bg-black/50 hover:bg-black/80 text-white rounded-full backdrop-blur-md transition-all luxury-shadow"
-              >
-                <ChevronLeft className="w-6 h-6 sm:w-8 sm:h-8" />
-              </button>
-            )}
-            
-            <img 
-              src={getImages(selectedItem)[currentImageIndex]} 
-              alt={selectedItem.title}
-              className="max-w-full max-h-full object-contain"
-            />
-            
-            {getImages(selectedItem).length > 1 && (
-              <button 
-                onClick={nextImage}
-                className="absolute right-2 sm:right-4 z-10 p-2 sm:p-3 bg-black/50 hover:bg-black/80 text-white rounded-full backdrop-blur-md transition-all luxury-shadow"
-              >
-                <ChevronRight className="w-6 h-6 sm:w-8 sm:h-8" />
-              </button>
-            )}
-
-            {getImages(selectedItem).length > 1 && (
-              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 px-3 py-2 bg-black/50 rounded-full backdrop-blur-md">
-                {getImages(selectedItem).map((_, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => setCurrentImageIndex(idx)}
-                    className={`w-2 h-2 rounded-full transition-all ${idx === currentImageIndex ? 'bg-white scale-125' : 'bg-white/50'}`}
-                  />
-                ))}
-              </div>
-            )}
-          </div>
-          
-          <div className="absolute bottom-8 left-0 right-0 text-center pointer-events-none px-4">
-            <h3 className="text-white text-title-lg sm:text-headline-md font-medium mb-2 drop-shadow-md">{selectedItem.title}</h3>
-            <div className="flex flex-wrap justify-center items-center gap-3">
-              {selectedItem.price && (
-                <p className="text-luxury-gold text-label-lg font-medium drop-shadow-md text-xl">₹{selectedItem.price.toLocaleString()}</p>
+          <div className="bg-white rounded-2xl overflow-hidden shadow-2xl w-full max-w-6xl max-h-full flex flex-col md:flex-row relative" onClick={(e) => e.stopPropagation()}>
+            {/* Left: Image Carousel */}
+            <div className="relative w-full md:w-3/5 bg-surface-container aspect-square md:aspect-auto md:min-h-[600px] flex items-center justify-center group">
+              {getImages(selectedItem).length > 1 && (
+                <button 
+                  onClick={prevImage}
+                  className="absolute left-2 sm:left-4 z-10 p-2 sm:p-3 bg-black/10 hover:bg-black/30 text-white rounded-full backdrop-blur-sm transition-all shadow-sm opacity-0 group-hover:opacity-100"
+                >
+                  <ChevronLeft className="w-6 h-6 sm:w-8 sm:h-8" />
+                </button>
               )}
-              {(selectedItem.weight || selectedItem.carat) && (
-                <div className="flex gap-2 text-white/80 text-sm font-medium drop-shadow-md pointer-events-auto">
-                  {selectedItem.weight && <span className="bg-black/40 px-2 py-1 rounded-md border border-white/10">{selectedItem.weight}</span>}
-                  {selectedItem.carat && <span className="bg-black/40 px-2 py-1 rounded-md border border-white/10">{selectedItem.carat}</span>}
+              
+              <img 
+                src={getImages(selectedItem)[currentImageIndex]} 
+                alt={selectedItem.title}
+                className="max-w-full max-h-full object-contain p-4"
+              />
+              
+              {getImages(selectedItem).length > 1 && (
+                <button 
+                  onClick={nextImage}
+                  className="absolute right-2 sm:right-4 z-10 p-2 sm:p-3 bg-black/10 hover:bg-black/30 text-white rounded-full backdrop-blur-sm transition-all shadow-sm opacity-0 group-hover:opacity-100"
+                >
+                  <ChevronRight className="w-6 h-6 sm:w-8 sm:h-8" />
+                </button>
+              )}
+
+              {getImages(selectedItem).length > 1 && (
+                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 px-3 py-2 bg-black/20 rounded-full backdrop-blur-sm">
+                  {getImages(selectedItem).map((_, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => setCurrentImageIndex(idx)}
+                      className={`w-2 h-2 rounded-full transition-all ${idx === currentImageIndex ? 'bg-primary scale-125' : 'bg-primary/30 hover:bg-primary/50'}`}
+                    />
+                  ))}
                 </div>
               )}
             </div>
-            {selectedItem.description && (
-              <p className="mt-2 text-white/90 text-sm max-w-2xl mx-auto drop-shadow-md line-clamp-2">{selectedItem.description}</p>
-            )}
+            
+            {/* Right: Details */}
+            <div className="w-full md:w-2/5 p-6 md:p-10 flex flex-col bg-white overflow-y-auto max-h-[50vh] md:max-h-none">
+              <h3 className="text-primary text-headline-sm md:text-headline-md font-medium mb-4">{selectedItem.title}</h3>
+              
+              <div className="flex flex-wrap items-center gap-3 border-b border-outline-variant/30 pb-6 mb-6">
+                {selectedItem.price ? (
+                  <p className="text-luxury-gold text-title-lg font-medium">₹{selectedItem.price.toLocaleString()}</p>
+                ) : (
+                  <p className="text-luxury-gold text-title-lg font-medium">Price on request</p>
+                )}
+                {(selectedItem.weight || selectedItem.carat) && (
+                  <div className="flex gap-2 text-on-surface-variant text-sm font-medium">
+                    {selectedItem.weight && <span className="bg-surface-container-high px-2 py-1 rounded-md">{selectedItem.weight}</span>}
+                    {selectedItem.carat && <span className="bg-surface-container-high px-2 py-1 rounded-md">{selectedItem.carat}</span>}
+                  </div>
+                )}
+              </div>
+              
+              {selectedItem.description && (
+                <div className="flex-1">
+                  <h4 className="text-label-lg font-medium text-on-surface-variant mb-2">Description</h4>
+                  <p className="text-body-lg text-on-surface leading-relaxed">{selectedItem.description}</p>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       )}

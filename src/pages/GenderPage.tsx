@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import { ArrowLeft, Loader2 } from 'lucide-react';
+import { ArrowLeft, Loader2, ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { api } from '../lib/api';
 
 export default function GenderPage() {
@@ -10,8 +10,40 @@ export default function GenderPage() {
   const [collections, setCollections] = useState<any[]>([]);
   const [jewelries, setJewelries] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedItem, setSelectedItem] = useState<any>(null);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   const title = type === 'him' ? 'For Him' : 'For Her';
+
+  const openImageModal = (item: any) => {
+    setSelectedItem(item);
+    setCurrentImageIndex(0);
+    document.body.style.overflow = 'hidden';
+  };
+
+  const closeImageModal = () => {
+    setSelectedItem(null);
+    document.body.style.overflow = '';
+  };
+
+  const getImages = (item: any) => {
+    if (!item) return [];
+    return [item.imageUrl, ...(item.imageUrls || [])].filter(Boolean);
+  };
+
+  const nextImage = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (selectedItem) {
+      setCurrentImageIndex((prev) => (prev + 1) % getImages(selectedItem).length);
+    }
+  };
+
+  const prevImage = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (selectedItem) {
+      setCurrentImageIndex((prev) => (prev === 0 ? getImages(selectedItem).length - 1 : prev - 1));
+    }
+  };
 
   useEffect(() => {
     async function fetchData() {
@@ -146,7 +178,11 @@ export default function GenderPage() {
             
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
               {jewelries.map((item) => (
-                <div key={item.id} className="bg-white rounded-2xl luxury-shadow overflow-hidden group">
+                <div 
+                  key={item.id} 
+                  className="bg-white rounded-2xl luxury-shadow overflow-hidden group cursor-pointer"
+                  onClick={() => openImageModal(item)}
+                >
                   <div className="relative aspect-square overflow-hidden bg-surface-container border-b border-outline-variant/30 flex items-center justify-center p-4">
                     <img 
                       src={item.imageUrl} 
@@ -179,6 +215,85 @@ export default function GenderPage() {
       )}
 
       <Footer />
+
+      {/* Image Modal */}
+      {selectedItem && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm p-4 md:p-8" onClick={closeImageModal}>
+          <button 
+            className="absolute top-4 right-4 text-white/70 hover:text-white transition-colors p-2 z-[60]"
+            onClick={closeImageModal}
+          >
+            <X className="w-8 h-8" />
+          </button>
+          
+          <div className="bg-white rounded-2xl overflow-hidden shadow-2xl w-full max-w-6xl max-h-full flex flex-col md:flex-row relative" onClick={(e) => e.stopPropagation()}>
+            {/* Left: Image Carousel */}
+            <div className="relative w-full md:w-3/5 bg-surface-container aspect-square md:aspect-auto md:min-h-[600px] flex items-center justify-center group">
+              {getImages(selectedItem).length > 1 && (
+                <button 
+                  onClick={prevImage}
+                  className="absolute left-2 sm:left-4 z-10 p-2 sm:p-3 bg-black/10 hover:bg-black/30 text-white rounded-full backdrop-blur-sm transition-all shadow-sm opacity-0 group-hover:opacity-100"
+                >
+                  <ChevronLeft className="w-6 h-6 sm:w-8 sm:h-8" />
+                </button>
+              )}
+              
+              <img 
+                src={getImages(selectedItem)[currentImageIndex]} 
+                alt={selectedItem.title}
+                className="max-w-full max-h-full object-contain p-4"
+              />
+              
+              {getImages(selectedItem).length > 1 && (
+                <button 
+                  onClick={nextImage}
+                  className="absolute right-2 sm:right-4 z-10 p-2 sm:p-3 bg-black/10 hover:bg-black/30 text-white rounded-full backdrop-blur-sm transition-all shadow-sm opacity-0 group-hover:opacity-100"
+                >
+                  <ChevronRight className="w-6 h-6 sm:w-8 sm:h-8" />
+                </button>
+              )}
+
+              {getImages(selectedItem).length > 1 && (
+                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 px-3 py-2 bg-black/20 rounded-full backdrop-blur-sm">
+                  {getImages(selectedItem).map((_, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => setCurrentImageIndex(idx)}
+                      className={`w-2 h-2 rounded-full transition-all ${idx === currentImageIndex ? 'bg-primary scale-125' : 'bg-primary/30 hover:bg-primary/50'}`}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+            
+            {/* Right: Details */}
+            <div className="w-full md:w-2/5 p-6 md:p-10 flex flex-col bg-white overflow-y-auto max-h-[50vh] md:max-h-none">
+              <h3 className="text-primary text-headline-sm md:text-headline-md font-medium mb-4">{selectedItem.title}</h3>
+              
+              <div className="flex flex-wrap items-center gap-3 border-b border-outline-variant/30 pb-6 mb-6">
+                {selectedItem.price ? (
+                  <p className="text-luxury-gold text-title-lg font-medium">₹{selectedItem.price.toLocaleString()}</p>
+                ) : (
+                  <p className="text-luxury-gold text-title-lg font-medium">Price on request</p>
+                )}
+                {(selectedItem.weight || selectedItem.carat) && (
+                  <div className="flex gap-2 text-on-surface-variant text-sm font-medium">
+                    {selectedItem.weight && <span className="bg-surface-container-high px-2 py-1 rounded-md">{selectedItem.weight}</span>}
+                    {selectedItem.carat && <span className="bg-surface-container-high px-2 py-1 rounded-md">{selectedItem.carat}</span>}
+                  </div>
+                )}
+              </div>
+              
+              {selectedItem.description && (
+                <div className="flex-1">
+                  <h4 className="text-label-lg font-medium text-on-surface-variant mb-2">Description</h4>
+                  <p className="text-body-lg text-on-surface leading-relaxed">{selectedItem.description}</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
