@@ -247,39 +247,6 @@ const handleAdditionalImagesChange = (e: React.ChangeEvent<HTMLInputElement>) =>
       });
     }
   };
-const handleAdditionalImagesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files || []);
-    const validFiles = files.filter(checkFileSize);
-    
-    if (validFiles.length > 0) {
-      setAdditionalFiles(prev => [...prev, ...validFiles]);
-      
-      validFiles.forEach(file => {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          setAdditionalPreviews(prev => [...prev, reader.result as string]);
-        };
-        reader.readAsDataURL(file);
-      });
-    }
-  };
-
-  const handleAdditionalImagesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files || []);
-    const validFiles = files.filter(checkFileSize);
-    
-    if (validFiles.length > 0) {
-      setAdditionalFiles(prev => [...prev, ...validFiles]);
-
-      validFiles.forEach(file => {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          setAdditionalPreviews(prev => [...prev, reader.result as string]);
-        };
-        reader.readAsDataURL(file);
-      });
-    }
-  };
       
   const removeAdditionalImage = (index: number) => {
     setAdditionalFiles(prev => prev.filter((_, i) => i !== index));
