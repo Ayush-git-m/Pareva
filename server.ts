@@ -150,6 +150,25 @@ async function startServer() {
       res.status(500).json({ error: "Failed to delete" });
     }
   });
+  app.put("/api/collections/:id", requireAuth, async (req: AuthRequest, res) => {
+  try {
+    const user = req.user;
+    if (user?.email !== 'ayushclasses10@gmail.com' && user?.email !== 'shreeparevajewellers@gmail.com') {
+      res.status(403).json({ error: "Forbidden" });
+      return;
+    }
+    const { id } = req.params;
+    const { title, description, imageUrl } = req.body;
+    const result = await db.update(collections)
+      .set({ title, description, imageUrl })
+      .where(eq(collections.id, parseInt(id)))
+      .returning();
+    res.json(result[0]);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to update collection" });
+  }
+});
 
   app.delete("/api/jewelries/:id", requireAuth, async (req: AuthRequest, res) => {
     try {
@@ -167,7 +186,25 @@ async function startServer() {
       res.status(500).json({ error: "Failed to delete" });
     }
   });
-  
+  app.put("/api/jewelries/:id", requireAuth, async (req: AuthRequest, res) => {
+  try {
+    const user = req.user;
+    if (user?.email !== 'ayushclasses10@gmail.com' && user?.email !== 'shreeparevajewellers@gmail.com') {
+      res.status(403).json({ error: "Forbidden" });
+      return;
+    }
+    const { id } = req.params;
+    const { title, description, collectionId, imageUrl, imageUrls, price, weight, carat } = req.body;
+    const result = await db.update(jewelries)
+      .set({ title, description, collectionId, imageUrl, imageUrls, price, weight, carat })
+      .where(eq(jewelries.id, parseInt(id)))
+      .returning();
+    res.json(result[0]);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to update jewellery" });
+  }
+});
   app.delete("/api/hero-banners/:id", requireAuth, async (req: AuthRequest, res) => {
     try {
       const user = req.user;
