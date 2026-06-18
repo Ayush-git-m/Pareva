@@ -293,7 +293,7 @@ export default function AdminPage() {
     );
   };
 
-  const handleAddJewelry = async (e: React.FormEvent) => {
+  const handleaddJewellery = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!title || !description || (!imagePreview && !imageFile)) {
       setError('Please fill in all required fields and upload an image.');
@@ -334,7 +334,7 @@ export default function AdminPage() {
       if (carat) {
         newJewelry.carat = carat;
       }
-      await api.addJewelry(newJewelry);
+      await api.addJewellery(newJewelry);
       
       setTitle('');
       setDescription('');
@@ -642,7 +642,7 @@ export default function AdminPage() {
                 <div className="lg:col-span-1">
                   <div className="bg-white p-6 rounded-2xl luxury-shadow sticky top-24">
                     <h2 className="text-title-lg text-primary mb-6">Add New Jewelry</h2>
-                    <form onSubmit={handleAddJewelry} className="space-y-4">
+                    <form onSubmit={handleaddJewellery} className="space-y-4">
                       <div>
                         <label className="block text-body-sm font-medium text-on-surface mb-1">Title</label>
                         <input
