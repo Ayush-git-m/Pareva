@@ -10,12 +10,15 @@ export const collections = pgTable('collections', {
   createdAt: timestamp('created_at').defaultNow(),
 });
 
+export const collectionsRelations = relations(collections, ({ many }) => ({
+  jewelries: many(jewelries),
+}));
 export const jewelries = pgTable('jewelries', {
   id: serial('id').primaryKey(),
   firebaseId: varchar('firebase_id', { length: 255 }).unique(),
   title: text('title').notNull(),
   description: text('description').notNull(),
-  collectionId: text('collection_id').notNull(),
+  collectionId: integer('collection_id').references(() => collections.id).notNull(),
   imageUrl: text('image_url').notNull(),
   imageUrls: text('image_urls').array(),
   price: integer('price'), // Optional price
@@ -36,6 +39,13 @@ export const heroBanners = pgTable('hero_banners', {
   order: integer('order').notNull(),
   createdAt: timestamp('created_at').defaultNow(),
 });
+
+export const jewelriesRelations = relations(jewelries, ({ one }) => ({
+  collection: one(collections, {
+    fields: [jewelries.collectionId],
+    references: [collections.id],
+  }),
+}));
 
 export const settings = pgTable('settings', {
   id: serial('id').primaryKey(),

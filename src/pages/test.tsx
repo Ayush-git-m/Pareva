@@ -1127,6 +1127,7 @@ const handleSaveEdit = async () => {
                               </div>
                             )}
                             <div className="absolute top-2 right-2 flex gap-2">
+                          
   <button
     onClick={(e) => { e.stopPropagation(); openEditModal(cat, 'category'); }}
     className="bg-white/90 text-primary hover:bg-primary/10 p-2 rounded-full transition-colors luxury-shadow"
@@ -1139,6 +1140,7 @@ const handleSaveEdit = async () => {
     className="bg-white/90 text-error hover:bg-error/10 p-2 rounded-full transition-colors luxury-shadow"
     title="Delete Category"
   >
+    </div>
     <Trash2 className="w-4 h-4" />
   </button>
 </div>

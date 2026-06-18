@@ -76,7 +76,7 @@ const [editCarat, setEditCarat] = useState('');
 const [editImagePreview, setEditImagePreview] = useState('');
 const [editImageFile, setEditImageFile] = useState<File | null>(null);
 const [editCollectionId, setEditCollectionId] = useState('');
-  
+const [editGender, setEditGender] = useState<'none' | 'him' | 'her' | 'unisex'>('none');  
 
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -84,7 +84,7 @@ const [editCollectionId, setEditCollectionId] = useState('');
   const [weight, setWeight] = useState('');
   const [carat, setCarat] = useState('');
   const [collectionId, setCollectionId] = useState('');
-
+  const [gender, setGender] = useState<'none' | 'him' | 'her' | 'unisex'>('none');
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState('');
 
@@ -258,6 +258,7 @@ const [editCollectionId, setEditCollectionId] = useState('');
     setEditWeight(item.weight || '');
     setEditCarat(item.carat || '');
     setEditCollectionId(item.collectionId ? String(item.collectionId) : '');
+    setEditGender(item.gender || 'none');
   }
 };
 
@@ -295,6 +296,7 @@ const handleSaveEdit = async () => {
         carat: editCarat || null,
         imageUrl: finalImageUrl,
         collectionId: editCollectionId,
+        gender: editGender === 'none' ? null : editGender,
       });
     } else if (editType === 'category') {
       await api.updateCollection(String(editingItem.id), {
@@ -407,6 +409,9 @@ const handleSaveEdit = async () => {
         imageUrl: finalImageUrl,
         imageUrls: finalAdditionalUrls.length > 0 ? finalAdditionalUrls : null,
       };
+      if (gender !== 'none') {
+        newjewellery.gender = gender;
+      }
       if (price) {
         newjewellery.price = Number(price);
       }
@@ -423,6 +428,7 @@ const handleSaveEdit = async () => {
       setPrice('');
       setWeight('');
       setCarat('');
+      setGender('none');
       setImageFile(null);
       setImagePreview('');
       setAdditionalFiles([]);
@@ -735,6 +741,19 @@ const handleSaveEdit = async () => {
                 />
               </div>
             </div>
+            <div>
+              <label className="block text-body-sm font-medium text-on-surface mb-1">Gender Category</label>
+              <select
+                value={editGender}
+                onChange={(e) => setEditGender(e.target.value as any)}
+                className="w-full px-4 py-2 border border-outline-variant/50 rounded-lg focus:outline-none focus:border-primary"
+              >
+                <option value="none">None</option>
+                <option value="him">For Him</option>
+                <option value="her">For Her</option>
+                <option value="unisex">Unisex</option>
+              </select>
+            </div>
           </>
         )}
 
@@ -906,6 +925,19 @@ const handleSaveEdit = async () => {
                             className="w-full px-4 py-2 border border-outline-variant/50 rounded-lg focus:outline-none focus:border-primary"
                           />
                         </div>
+                      </div>
+                      <div>
+                        <label className="block text-body-sm font-medium text-on-surface mb-1">Gender Category</label>
+                        <select
+                          value={gender}
+                          onChange={(e) => setGender(e.target.value as any)}
+                          className="w-full px-4 py-2 border border-outline-variant/50 rounded-lg focus:outline-none focus:border-primary"
+                        >
+                          <option value="none">None</option>
+                          <option value="him">For Him</option>
+                          <option value="her">For Her</option>
+                          <option value="unisex">Unisex</option>
+                        </select>
                       </div>
                       <div>
                         <label className="block text-body-sm font-medium text-on-surface mb-1">Primary Image (Required)</label>

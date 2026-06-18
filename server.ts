@@ -108,8 +108,8 @@ async function startServer() {
          return;
       }
 
-      const { title, description, collectionId, imageUrl, imageUrls, price, firebaseId, weight, carat } = req.body;
-      const result = await db.insert(jewelries).values({ title, description, collectionId, imageUrl, imageUrls, price, firebaseId, weight, carat }).returning();
+      const { title, description, collectionId, imageUrl, imageUrls, price, firebaseId, weight, carat, gender } = req.body;
+      const result = await db.insert(jewelries).values({ title, description, collectionId, imageUrl, imageUrls, price, firebaseId, weight, carat, gender } as any).returning();
       res.json(result[0]);
     } catch (error) {
       console.error("DB error:", error);
@@ -194,9 +194,9 @@ async function startServer() {
       return;
     }
     const { id } = req.params;
-    const { title, description, collectionId, imageUrl, imageUrls, price, weight, carat } = req.body;
+    const { title, description, collectionId, imageUrl, imageUrls, price, weight, carat, gender } = req.body;
     const result = await db.update(jewelries)
-      .set({ title, description, collectionId, imageUrl, imageUrls, price, weight, carat })
+      .set({ title, description, collectionId, imageUrl, imageUrls, price, weight, carat, gender } as any)
       .where(eq(jewelries.id, parseInt(id)))
       .returning();
     res.json(result[0]);
