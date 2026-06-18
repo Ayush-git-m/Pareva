@@ -101,7 +101,7 @@ export default function GenderPage() {
         );
         
         // Match the order of IDs if possible
-        selectedCollections.sort((a, b) => {
+        selectedCollections.sort((a: any, b: any) => {
            return collectionIds.indexOf(String(a.id)) - collectionIds.indexOf(String(b.id));
         });
 
