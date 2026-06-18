@@ -69,6 +69,23 @@ export const api = {
         if (!res.ok) throw new Error('Failed to delete');
         return res.json();
     },
+    updateJewellery: async (id: string, data: any) => {
+  const res = await fetch(`/api/jewelries/${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${await getToken()}` },
+    body: JSON.stringify(data)
+  });
+  return res.json();
+},
+
+    updateCollection: async (id: string, data: any) => {
+  const res = await fetch(`/api/collections/${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${await getToken()}` },
+    body: JSON.stringify(data)
+  });
+  return res.json();
+},
     toggleBanner: async (id: number, enabled: boolean) => {
          const res = await fetch(`/api/hero-banners/${id}/toggle`, {
             method: 'POST',
