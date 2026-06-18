@@ -1,9 +1,79 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { ArrowLeft, Loader2 } from 'lucide-react';
 import { api } from '../lib/api';
+
+function JewelryImageCarousel({ mainImage, additionalImages, title }: { 
+  mainImage: string; 
+  additionalImages: string[];
+  title: string;
+}) {
+  const allImages = [mainImage, ...additionalImages].filter(Boolean);
+  const [current, setCurrent] = useState(0);
+  const touchStartX = useRef<number | null>(null);
+
+  const prev = () => setCurrent(i => (i === 0 ? allImages.length - 1 : i - 1));
+  const next = () => setCurrent(i => (i === allImages.length - 1 ? 0 : i + 1));
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX.current === null) return;
+    const diff = touchStartX.current - e.changedTouches[0].clientX;
+    if (diff > 50) next();
+    else if (diff < -50) prev();
+    touchStartX.current = null;
+  };
+
+  if (allImages.length === 1) {
+    return (
+      <img 
+        src={mainImage} 
+        alt={title} 
+        className="w-full h-full object-contain mix-blend-multiply transition-transform duration-700 group-hover:scale-105"
+      />
+    );
+  }
+
+  return (
+    <div 
+      className="relative w-full h-full"
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+    >
+      <img 
+        src={allImages[current]} 
+        alt={`${title} ${current + 1}`} 
+        className="w-full h-full object-contain mix-blend-multiply transition-opacity duration-300"
+      />
+      <button 
+        onClick={prev} 
+        className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 rounded-full w-7 h-7 flex items-center justify-center shadow text-primary hover:bg-white transition-colors text-lg font-bold"
+      >
+        ‹
+      </button>
+      <button 
+        onClick={next} 
+        className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 rounded-full w-7 h-7 flex items-center justify-center shadow text-primary hover:bg-white transition-colors text-lg font-bold"
+      >
+        ›
+      </button>
+      <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-1">
+        {allImages.map((_, i) => (
+          <button 
+            key={i} 
+            onClick={() => setCurrent(i)}
+            className={`w-1.5 h-1.5 rounded-full transition-colors ${i === current ? 'bg-primary' : 'bg-outline-variant'}`}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
 
 export default function CollectionPage() {
   const { id } = useParams();
@@ -108,14 +178,10 @@ export default function CollectionPage() {
               />
             </div>
             <div>
-              <div className="mb-8 p-4 bg-surface-container-low rounded-full inline-block">
-                {collectionData.icon}
-              </div>
               <h2 className="text-headline-md text-primary mb-6 font-headline-md">About the Collection</h2>
               <p className="text-body-lg text-on-surface-variant mb-8 leading-relaxed">
                 {collectionData.description}
               </p>
-              
               <div className="space-y-6">
                  <h3 className="text-title-lg text-on-surface">Explore this collection in-store</h3>
                  <p className="text-body-md text-on-surface-variant">
@@ -152,11 +218,11 @@ export default function CollectionPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
               {jewelries.map((item) => (
                 <div key={item.id} className="bg-white rounded-2xl luxury-shadow overflow-hidden group">
-                  <div className="relative aspect-square overflow-hidden bg-surface-container border-b border-outline-variant/30 flex items-center justify-center p-4">
-                    <img 
-                      src={item.imageUrl} 
-                      alt={item.title} 
-                      className="w-full h-full object-contain mix-blend-multiply transition-transform duration-700 group-hover:scale-105"
+                  <div className="relative aspect-square overflow-hidden bg-surface-container border-b border-outline-variant/30">
+                    <JewelryImageCarousel
+                      mainImage={item.imageUrl}
+                      additionalImages={item.imageUrls || []}
+                      title={item.title}
                     />
                   </div>
                   <div className="p-6">

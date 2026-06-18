@@ -316,11 +316,10 @@ const handleVideoFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         finalImageUrl = await uploadImageToCloudinary(imageFile);
       }
     const finalAdditionalUrls: string[] = [];
-      for (let i = 0; i < additionalFiles.length; i++) {
-        const compressedBlob = await compressImage(additionalFiles[i]);
-        const b64 = await blobToBase64(compressedBlob);
-        finalAdditionalUrls.push(b64);
-      }
+for (let i = 0; i < additionalFiles.length; i++) {
+  const url = await uploadImageToCloudinary(additionalFiles[i]);
+  finalAdditionalUrls.push(url);
+}
 
       const newJewellery: any = {
         title,
@@ -710,6 +709,41 @@ const handleVideoFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
                           </label>
                         </div>
                       </div>
+                      <div>
+  <label className="block text-body-sm font-medium text-on-surface mb-1">
+    Additional Images (Max 4)
+  </label>
+  <div className="border border-dashed border-outline-variant/50 rounded-lg p-4 text-center cursor-pointer hover:bg-surface-container-low transition-colors">
+    <input
+      type="file"
+      accept="image/*"
+      multiple
+      onChange={handleAdditionalImagesChange}
+      className="hidden"
+      id="additionalImagesUpload"
+    />
+    <label htmlFor="additionalImagesUpload" className="cursor-pointer flex flex-col items-center">
+      <ImageIcon className="w-8 h-8 text-on-surface-variant mb-2" />
+      <span className="text-body-sm text-primary">Click to select up to 4 more images</span>
+    </label>
+  </div>
+  {additionalPreviews.length > 0 && (
+    <div className="grid grid-cols-4 gap-2 mt-2">
+      {additionalPreviews.map((src, i) => (
+        <div key={i} className="relative">
+          <img src={src} className="h-16 w-full object-cover rounded-lg" />
+          <button
+            type="button"
+            onClick={() => removeAdditionalImage(i)}
+            className="absolute -top-1 -right-1 bg-error text-white rounded-full w-4 h-4 flex items-center justify-center text-xs"
+          >
+            ×
+          </button>
+        </div>
+      ))}
+    </div>
+  )}
+</div>
                       <button
                         type="submit"
                         disabled={isSubmitting}
