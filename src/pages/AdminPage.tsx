@@ -65,7 +65,7 @@ export default function AdminPage() {
   const [forHimCollectionIds, setForHimCollectionIds] = useState<string[]>([]);
   const [forHerCollectionIds, setForHerCollectionIds] = useState<string[]>([]);
   
-  // Jewelry State
+  // jewellery State
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [collectionId, setCollectionId] = useState('');
@@ -99,7 +99,7 @@ export default function AdminPage() {
   const [error, setError] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
   const [uploadProgress, setUploadProgress] = useState<number | null>(null);
-  const [itemToDelete, setItemToDelete] = useState<{ id: string, type: 'jewelry' | 'category' | 'banner' } | null>(null);
+  const [itemToDelete, setItemToDelete] = useState<{ id: string, type: 'jewellery' | 'category' | 'banner' } | null>(null);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -318,7 +318,7 @@ export default function AdminPage() {
         finalAdditionalUrls.push(b64);
       }
 
-      const newJewelry: any = {
+      const newjewellery: any = {
         title,
         description,
         collectionId,
@@ -326,15 +326,15 @@ export default function AdminPage() {
         imageUrls: finalAdditionalUrls.length > 0 ? finalAdditionalUrls : null,
       };
       if (price) {
-        newJewelry.price = Number(price);
+        newjewellery.price = Number(price);
       }
       if (weight) {
-        newJewelry.weight = weight;
+        newjewellery.weight = weight;
       }
       if (carat) {
-        newJewelry.carat = carat;
+        newjewellery.carat = carat;
       }
-      await api.addJewellery(newJewelry);
+      await api.addJewellery(newjewellery);
       
       setTitle('');
       setDescription('');
@@ -346,13 +346,13 @@ export default function AdminPage() {
       setAdditionalFiles([]);
       setAdditionalPreviews([]);
       
-      setSuccessMsg('Jewelry uploaded and added successfully.');
+      setSuccessMsg('jewellery uploaded and added successfully.');
       setTimeout(() => setSuccessMsg(''), 4000);
       
       await fetchData();
     } catch (err: any) {
       console.error(err);
-      setError(err.message || 'Error adding jewelry');
+      setError(err.message || 'Error adding jewellery');
     } finally {
       setIsSubmitting(false);
     }
@@ -467,7 +467,7 @@ export default function AdminPage() {
   };
 
   const handleDeleteJ = async (id: string) => {
-    setItemToDelete({ id, type: 'jewelry' });
+    setItemToDelete({ id, type: 'jewellery' });
   };
 
   const handleDeleteC = async (id: string) => {
@@ -641,7 +641,7 @@ export default function AdminPage() {
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
                 <div className="lg:col-span-1">
                   <div className="bg-white p-6 rounded-2xl luxury-shadow sticky top-24">
-                    <h2 className="text-title-lg text-primary mb-6">Add New Jewelry</h2>
+                    <h2 className="text-title-lg text-primary mb-6">Add New jewellery</h2>
                     <form onSubmit={handleaddJewellery} className="space-y-4">
                       <div>
                         <label className="block text-body-sm font-medium text-on-surface mb-1">Title</label>
@@ -781,7 +781,7 @@ export default function AdminPage() {
                              {uploadProgress !== null ? `Uploading... ${Math.round(uploadProgress)}%` : 'Processing...'}
                           </div>
                         ) : (
-                          <><Plus className="w-5 h-5" /> Add Jewelry </>
+                          <><Plus className="w-5 h-5" /> Add jewellery </>
                         )}
                       </button>
                     </form>
