@@ -74,6 +74,7 @@ const [editDescription, setEditDescription] = useState('');
 const [editPrice, setEditPrice] = useState('');
 const [editWeight, setEditWeight] = useState('');
 const [editCarat, setEditCarat] = useState('');
+const [editMetal, setEditMetal] = useState('gold');
 const [editImagePreview, setEditImagePreview] = useState('');
 const [editImageFile, setEditImageFile] = useState<File | null>(null);
 const [editCollectionId, setEditCollectionId] = useState('');
@@ -85,6 +86,7 @@ const [editGender, setEditGender] = useState<'none' | 'him' | 'her' | 'unisex'>(
   const [price, setPrice] = useState('');
   const [weight, setWeight] = useState('');
   const [carat, setCarat] = useState('');
+  const [metal, setMetal] = useState('gold');
   const [collectionId, setCollectionId] = useState('');
   const [gender, setGender] = useState<'none' | 'him' | 'her' | 'unisex'>('none');
 
@@ -263,6 +265,7 @@ const [editGender, setEditGender] = useState<'none' | 'him' | 'her' | 'unisex'>(
     setEditPrice(item.price ? String(item.price) : '');
     setEditWeight(item.weight || '');
     setEditCarat(item.carat || '');
+    setEditMetal(item.metal || 'gold');
     setEditCollectionId(item.collectionId ? String(item.collectionId) : '');
     setEditGender(item.gender || 'none');
   }
@@ -300,6 +303,7 @@ const handleSaveEdit = async () => {
         price: editPrice ? Number(editPrice) : null,
         weight: editWeight || null,
         carat: editCarat || null,
+        metal: editMetal,
         imageUrl: finalImageUrl,
         collectionId: editCollectionId,
         gender: editGender === 'none' ? null : editGender,
@@ -412,6 +416,7 @@ const handleSaveEdit = async () => {
         title,
         description,
         collectionId,
+        metal,
         imageUrl: finalImageUrl,
         imageUrls: finalAdditionalUrls.length > 0 ? finalAdditionalUrls : null,
       };
@@ -434,6 +439,7 @@ const handleSaveEdit = async () => {
       setPrice('');
       setWeight('');
       setCarat('');
+      setMetal('gold');
       setGender('none');
       setImageFile(null);
       setImagePreview('');
@@ -599,7 +605,7 @@ const handleSaveEdit = async () => {
   const confirmDelete = async () => {
     if (!itemToDelete) return;
     try {
-      await api.deleteItem(itemToDelete.type, Number(itemToDelete.id));
+      await api.deleteItem(itemToDelete.type, itemToDelete.id);
       await fetchData();
       setItemToDelete(null);
     } catch (err: any) {
@@ -748,18 +754,33 @@ const handleSaveEdit = async () => {
                 />
               </div>
             </div>
-            <div>
-              <label className="block text-body-sm font-medium text-on-surface mb-1">Gender Category</label>
-              <select
-                value={editGender}
-                onChange={(e) => setEditGender(e.target.value as any)}
-                className="w-full px-4 py-2 border border-outline-variant/50 rounded-lg focus:outline-none focus:border-primary"
-              >
-                <option value="none">None</option>
-                <option value="him">For Him</option>
-                <option value="her">For Her</option>
-                <option value="unisex">Unisex</option>
-              </select>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-body-sm font-medium text-on-surface mb-1">Metal</label>
+                <select
+                  value={editMetal}
+                  onChange={(e) => setEditMetal(e.target.value)}
+                  className="w-full px-4 py-2 border border-outline-variant/50 rounded-lg focus:outline-none focus:border-primary"
+                >
+                  <option value="gold">Gold</option>
+                  <option value="silver">Silver</option>
+                  <option value="platinum">Platinum</option>
+                  <option value="diamond">Diamond</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-body-sm font-medium text-on-surface mb-1">Gender Category</label>
+                <select
+                  value={editGender}
+                  onChange={(e) => setEditGender(e.target.value as any)}
+                  className="w-full px-4 py-2 border border-outline-variant/50 rounded-lg focus:outline-none focus:border-primary"
+                >
+                  <option value="none">None</option>
+                  <option value="him">For Him</option>
+                  <option value="her">For Her</option>
+                  <option value="unisex">Unisex</option>
+                </select>
+              </div>
             </div>
           </>
         )}
@@ -933,18 +954,33 @@ const handleSaveEdit = async () => {
                           />
                         </div>
                       </div>
-                      <div>
-                        <label className="block text-body-sm font-medium text-on-surface mb-1">Gender Category</label>
-                        <select
-                          value={gender}
-                          onChange={(e) => setGender(e.target.value as any)}
-                          className="w-full px-4 py-2 border border-outline-variant/50 rounded-lg focus:outline-none focus:border-primary"
-                        >
-                          <option value="none">None</option>
-                          <option value="him">For Him</option>
-                          <option value="her">For Her</option>
-                          <option value="unisex">Unisex</option>
-                        </select>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-body-sm font-medium text-on-surface mb-1">Metal</label>
+                          <select
+                            value={metal}
+                            onChange={(e) => setMetal(e.target.value)}
+                            className="w-full px-4 py-2 border border-outline-variant/50 rounded-lg focus:outline-none focus:border-primary"
+                          >
+                            <option value="gold">Gold</option>
+                            <option value="silver">Silver</option>
+                            <option value="platinum">Platinum</option>
+                            <option value="diamond">Diamond</option>
+                          </select>
+                        </div>
+                        <div>
+                          <label className="block text-body-sm font-medium text-on-surface mb-1">Gender Category</label>
+                          <select
+                            value={gender}
+                            onChange={(e) => setGender(e.target.value as any)}
+                            className="w-full px-4 py-2 border border-outline-variant/50 rounded-lg focus:outline-none focus:border-primary"
+                          >
+                            <option value="none">None</option>
+                            <option value="him">For Him</option>
+                            <option value="her">For Her</option>
+                            <option value="unisex">Unisex</option>
+                          </select>
+                        </div>
                       </div>
                       <div>
                         <label className="block text-body-sm font-medium text-on-surface mb-1">Primary Image (Required)</label>
