@@ -66,6 +66,7 @@ export default function Hero() {
                     className="w-full h-auto block mx-auto"
                     alt={banner.title || "Luxury Jewellery"}
                     src={banner.imageUrl}
+                    fetchPriority="high"
                   />
                 </div>
 
