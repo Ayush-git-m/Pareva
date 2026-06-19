@@ -7,6 +7,10 @@ A modern full-stack jewellery showroom website built for showcasing premium gold
 https://pareva-production.up.railway.app/
 
 
+<img width="1337" height="647" alt="image" src="https://github.com/user-attachments/assets/3037f6f3-bf64-473d-bd0b-b178ee6c33e9" />
+<img width="1335" height="690" alt="image" src="https://github.com/user-attachments/assets/aa4e092b-87cc-4070-acf9-c15dfb59778c" />
+
+
 ---
 
 ## Features
