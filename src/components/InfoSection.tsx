@@ -5,6 +5,7 @@ import { api } from '../lib/api';
 export default function Sections() {
   const [goldRate22k, setGoldRate22k] = useState('');
   const [goldRate24k, setGoldRate24k] = useState('');
+  const [silverRate, setSilverRate] = useState('');
 
   useEffect(() => {
     async function fetchSettings() {
@@ -12,6 +13,7 @@ export default function Sections() {
         const settings = await api.getSettings();
         if (settings.goldRate22k) setGoldRate22k(settings.goldRate22k);
         if (settings.goldRate24k) setGoldRate24k(settings.goldRate24k);
+        if (settings.silverRate) setSilverRate(settings.silverRate);
       } catch (err) {
         console.error("Error fetching settings:", err);
       }
@@ -24,41 +26,56 @@ export default function Sections() {
       <div className="max-w-container-max mx-auto px-gutter">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           
-          {/* Left Side: Gold Rate */}
+          {/* Left Side: Gold & Silver Rates */}
           <div className="flex flex-col h-full justify-center">
-            <div className="bg-white rounded-[32px] luxury-shadow border border-[#E5D38A]/40 p-10 md:p-14 relative overflow-hidden group min-h-[400px] flex flex-col justify-center">
+            <div className="bg-white rounded-[24px] luxury-shadow border border-[#E5D38A]/20 p-8 md:p-12 relative overflow-hidden group min-h-[400px] flex flex-col justify-center">
                <div className="absolute top-0 right-0 w-64 h-64 bg-[#E5D38A]/10 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/3"></div>
                <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#E5D38A]/5 rounded-full blur-[60px] translate-y-1/3 -translate-x-1/3"></div>
                
                <div className="relative z-10 flex flex-col items-center text-center">
-                 <div className="w-16 h-16 bg-[#111111] rounded-full flex items-center justify-center mb-8 shadow-lg shadow-black/5">
-                   <TrendingUp className="w-8 h-8 text-[#E5D38A]" />
+                 <div className="w-14 h-14 bg-[#1a0508] rounded-full flex items-center justify-center mb-6 shadow-lg shadow-black/10 ring-4 ring-[#E5D38A]/20">
+                   <TrendingUp className="w-6 h-6 text-[#E5D38A]" />
                  </div>
                  
-                 <h3 className="text-3xl md:text-4xl font-headline-md text-[#111111] mb-2">
+                 <h3 className="text-3xl md:text-4xl font-headline-md text-[#1a0508] mb-3 font-serif tracking-tight">
                    Live Market Rates
                  </h3>
-                 <p className="text-on-surface-variant text-base md:text-lg mb-10 max-w-[280px]">
-                   Updated daily. Assured purity and transparency.
+                 <p className="text-on-surface-variant text-sm md:text-base mb-10 max-w-[320px]">
+                   Updated daily to ensure complete transparency & assured purity.
                  </p>
                  
-                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full">
-                   <div className="bg-surface-container-lowest p-6 rounded-2xl border border-outline-variant/60 text-center transition-all duration-500 hover:-translate-y-1 hover:border-[#E5D38A]/60 hover:shadow-lg group/card">
+                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 p-2 w-full">
+                   {/* 22K Gold */}
+                   <div className="bg-[#faf9f6] px-2 py-6 rounded-xl border border-[#E5D38A]/40 text-center transition-all duration-500 hover:-translate-y-1 hover:border-[#E5D38A] hover:bg-white hover:shadow-xl group/card relative">
+                      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-12 h-[2px] bg-[#E5D38A]"></div>
                       <div className="flex items-center justify-center gap-2 mb-3">
-                         <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
-                         <h4 className="text-label-lg uppercase tracking-widest text-[#111111] font-medium">22K Gold</h4>
+                         <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></div>
+                         <h4 className="text-[10px] sm:text-xs uppercase tracking-[0.2em] text-[#1a0508]/70 font-semibold">22K Gold</h4>
                       </div>
-                      <p className="text-4xl md:text-5xl font-mono font-medium text-[#111111]">{goldRate22k || '---'}</p>
-                      <p className="text-on-surface-variant/70 text-xs mt-3 uppercase tracking-wider">Per 10 Grams</p>
+                      <p className="text-2xl sm:text-2xl md:text-3xl font-mono font-medium text-[#1a0508] tracking-tighter">{goldRate22k || '---'}</p>
+                      <p className="text-on-surface-variant/50 text-[9px] sm:text-[10px] mt-3 md:mt-4 uppercase tracking-widest">Per 10 Grams</p>
                    </div>
                    
-                   <div className="bg-surface-container-lowest p-6 rounded-2xl border border-outline-variant/60 text-center transition-all duration-500 hover:-translate-y-1 hover:border-[#E5D38A]/60 hover:shadow-lg group/card">
+                   {/* 24K Gold */}
+                   <div className="bg-[#faf9f6] px-2 py-6 rounded-xl border border-[#E5D38A]/40 text-center transition-all duration-500 hover:-translate-y-1 hover:border-[#E5D38A] hover:bg-white hover:shadow-xl group/card relative">
+                      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-12 h-[2px] bg-[#E5D38A]"></div>
                       <div className="flex items-center justify-center gap-2 mb-3">
-                         <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
-                         <h4 className="text-label-lg uppercase tracking-widest text-[#111111] font-medium">24K Gold</h4>
+                         <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></div>
+                         <h4 className="text-[10px] sm:text-xs uppercase tracking-[0.2em] text-[#1a0508]/70 font-semibold">24K Gold</h4>
                       </div>
-                      <p className="text-4xl md:text-5xl font-mono font-medium text-[#111111]">{goldRate24k || '---'}</p>
-                      <p className="text-on-surface-variant/70 text-xs mt-3 uppercase tracking-wider">Per 10 Grams</p>
+                      <p className="text-2xl sm:text-2xl md:text-3xl font-mono font-medium text-[#1a0508] tracking-tighter">{goldRate24k || '---'}</p>
+                      <p className="text-on-surface-variant/50 text-[9px] sm:text-[10px] mt-3 md:mt-4 uppercase tracking-widest">Per 10 Grams</p>
+                   </div>
+
+                   {/* Silver */}
+                   <div className="bg-[#faf9f6] px-2 py-6 rounded-xl border border-gray-300 text-center transition-all duration-500 hover:-translate-y-1 hover:border-gray-400 hover:bg-white hover:shadow-xl group/card relative">
+                      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-12 h-[2px] bg-gray-400"></div>
+                      <div className="flex items-center justify-center gap-2 mb-3">
+                         <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></div>
+                         <h4 className="text-[10px] sm:text-xs uppercase tracking-[0.2em] text-[#1a0508]/70 font-semibold">Silver</h4>
+                      </div>
+                      <p className="text-2xl sm:text-2xl md:text-3xl font-mono font-medium text-[#1a0508] tracking-tighter">{silverRate || '---'}</p>
+                      <p className="text-on-surface-variant/50 text-[9px] sm:text-[10px] mt-3 md:mt-4 uppercase tracking-widest">Per 1 KG</p>
                    </div>
                  </div>
                </div>

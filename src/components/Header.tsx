@@ -7,6 +7,8 @@ import { api } from '../lib/api';
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [goldRate, setGoldRate] = useState<string | null>(null);
+  const [silverRate, setSilverRate] = useState<string | null>(null);
+  const [currentRateIndex, setCurrentRateIndex] = useState(0);
 
   useEffect(() => {
     async function fetchRate() {
@@ -15,12 +17,31 @@ export default function Header() {
         if (settings.goldRate22k) {
           setGoldRate(settings.goldRate22k);
         }
+        if (settings.silverRate) {
+          setSilverRate(settings.silverRate);
+        }
       } catch (err) {
         console.error("Error fetching gold rate in header", err);
       }
     }
     fetchRate();
   }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentRateIndex((prev) => prev + 1);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const getDisplayRate = () => {
+    const activeRates = [];
+    if (goldRate) activeRates.push(`22K: ${goldRate}`);
+    if (silverRate) activeRates.push(`Silver: ${silverRate}`);
+    
+    if (activeRates.length === 0) return 'Live Market Rates';
+    return activeRates[currentRateIndex % activeRates.length];
+  };
 
   return (
     <nav className="sticky top-0 z-50 glass-nav border-b border-outline-variant/30">
@@ -71,7 +92,9 @@ export default function Header() {
             className="flex items-center gap-2 bg-[#E5D38A]/20 text-[#111111] border border-[#E5D38A]/50 px-4 py-2 rounded-full font-medium text-sm hover:bg-[#E5D38A]/30 transition-colors shadow-sm"
           >
             <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-            {goldRate ? `22k Today: ${goldRate}` : 'Live Market Rates'}
+            <span className="min-w-[120px] text-center inline-block transition-opacity duration-300">
+              {getDisplayRate()}
+            </span>
           </button>
           <Link
             className="text-label-lg text-on-surface-variant hover:text-primary transition-colors duration-300"
@@ -112,7 +135,9 @@ export default function Header() {
               className="flex items-center gap-2 bg-[#E5D38A]/20 text-[#111111] border border-[#E5D38A]/50 px-4 py-2 rounded-full font-medium text-sm w-fit shadow-sm hover:bg-[#E5D38A]/30 transition-colors"
             >
               <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-              {goldRate ? `22k Today: ${goldRate}` : 'Live Market Rates'}
+              <span className="min-w-[120px] text-center inline-block transition-opacity duration-300">
+                {getDisplayRate()}
+              </span>
             </button>
             <Link
               className="text-label-lg text-on-surface-variant"
@@ -127,3 +152,4 @@ export default function Header() {
     </nav>
   );
 }
+

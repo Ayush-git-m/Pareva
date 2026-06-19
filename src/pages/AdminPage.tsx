@@ -62,6 +62,7 @@ export default function AdminPage() {
   const [bridalVideoUrl, setBridalVideoUrl] = useState('');
   const [goldRate22k, setGoldRate22k] = useState('');
   const [goldRate24k, setGoldRate24k] = useState('');
+  const [silverRate, setSilverRate] = useState('');
   const [forHimCollectionIds, setForHimCollectionIds] = useState<string[]>([]);
   const [forHerCollectionIds, setForHerCollectionIds] = useState<string[]>([]);
   
@@ -76,7 +77,8 @@ const [editCarat, setEditCarat] = useState('');
 const [editImagePreview, setEditImagePreview] = useState('');
 const [editImageFile, setEditImageFile] = useState<File | null>(null);
 const [editCollectionId, setEditCollectionId] = useState('');
-const [editGender, setEditGender] = useState<'none' | 'him' | 'her' | 'unisex'>('none');  
+const [editGender, setEditGender] = useState<'none' | 'him' | 'her' | 'unisex'>('none');
+  
 
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -85,6 +87,7 @@ const [editGender, setEditGender] = useState<'none' | 'him' | 'her' | 'unisex'>(
   const [carat, setCarat] = useState('');
   const [collectionId, setCollectionId] = useState('');
   const [gender, setGender] = useState<'none' | 'him' | 'her' | 'unisex'>('none');
+
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState('');
 
@@ -161,6 +164,9 @@ const [editGender, setEditGender] = useState<'none' | 'him' | 'her' | 'unisex'>(
       }
       if (sData.goldRate24k) {
          setGoldRate24k(sData.goldRate24k);
+      }
+      if (sData.silverRate) {
+         setSilverRate(sData.silverRate);
       }
       if (sData.forHimCollectionId) {
          try {
@@ -575,6 +581,7 @@ const handleSaveEdit = async () => {
          bridalVideoUrl: bridalVideoUrl,
          goldRate22k: goldRate22k,
          goldRate24k: goldRate24k,
+         silverRate: silverRate,
          forHimCollectionId: JSON.stringify(forHimCollectionIds),
          forHerCollectionId: JSON.stringify(forHerCollectionIds)
       });
@@ -592,7 +599,7 @@ const handleSaveEdit = async () => {
   const confirmDelete = async () => {
     if (!itemToDelete) return;
     try {
-      await api.deleteItem(itemToDelete.type, Number(itemToDelete.id));
+      await api.deleteItem(itemToDelete.type, itemToDelete.id);
       await fetchData();
       setItemToDelete(null);
     } catch (err: any) {
@@ -1412,7 +1419,7 @@ const handleSaveEdit = async () => {
                            </div>
                         )}
                       </div>
-                      <div className="mb-6 grid grid-cols-2 gap-4">
+                      <div className="mb-6 grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div>
                           <label className="block text-label-md font-medium text-on-surface mb-2">
                             Today's 22K Gold Rate (per 10g)
@@ -1435,6 +1442,18 @@ const handleSaveEdit = async () => {
                             value={goldRate24k}
                             onChange={(e) => setGoldRate24k(e.target.value)}
                             placeholder="₹77,400"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-label-md font-medium text-on-surface mb-2">
+                            Today's Silver Rate (per 1kg)
+                          </label>
+                          <input
+                            type="text"
+                            className="w-full border-b border-outline bg-transparent py-2 text-on-surface focus:border-primary focus:outline-none transition-colors"
+                            value={silverRate}
+                            onChange={(e) => setSilverRate(e.target.value)}
+                            placeholder="₹92,000"
                           />
                         </div>
                       </div>
