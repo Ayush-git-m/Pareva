@@ -109,9 +109,15 @@ export default function GenderPage() {
         setCollections(selectedCollections);
 
         const allJewelries = await api.getJewelries();
-        const selectedJewelries = allJewelries.filter((j: any) => 
-          collectionIds.includes(String(j.collectionId))
-        );
+        const selectedJewelries = allJewelries.filter((j: any) => {
+          const inCollection = collectionIds.includes(String(j.collectionId));
+          if (!inCollection) return false;
+          
+          if (j.gender && j.gender !== 'none' && j.gender !== 'unisex' && j.gender !== type) {
+            return false;
+          }
+          return true;
+        });
         setJewelries(selectedJewelries);
 
       } catch (err) {
@@ -323,7 +329,7 @@ export default function GenderPage() {
               {selectedItem.description && (
                 <div className="flex-1">
                   <h4 className="text-label-lg font-medium text-on-surface-variant mb-2">Description</h4>
-                  <p className="whitespace-pre-line text-body-lg text-on-surface leading-relaxed">{selectedItem.description}</p>
+                  <p className="text-body-lg text-on-surface leading-relaxed">{selectedItem.description}</p>
                 </div>
               )}
             </div>
