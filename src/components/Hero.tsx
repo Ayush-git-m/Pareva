@@ -61,10 +61,10 @@ export default function Hero() {
           {displayBanners.map((banner) => (
             <SwiperSlide key={banner.id}>
               <div className="w-full flex-col bg-[#1a0508]">
-                {/* Image Section - Never cropped */}
-                <div className="w-full relative flex justify-center items-center">
+                {/* Image Section - Constrained height */}
+                <div className="w-full h-[50vh] md:h-[60vh] relative flex justify-center items-center overflow-hidden">
                   <img
-                    className="w-full h-auto block mx-auto"
+                    className="w-full h-full object-cover block mx-auto object-center"
                     alt={banner.title || "Luxury Jewellery"}
                     src={optimizeImage(banner.imageUrl, 1600)}
                     fetchPriority="high"
