@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import Header from '../components/Header';
 import Hero from '../components/Hero';
 import Features from '../components/Features';
@@ -10,6 +11,8 @@ import StoreInfo from '../components/StoreInfo';
 import Footer from '../components/Footer';
 
 export default function HomePage() {
+  const [activeCategory, setActiveCategory] = useState<'gold' | 'silver'>('gold');
+
   return (
     <div className="min-h-screen">
       <Header />
