@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import SearchBar from './SearchBar';
 import { api } from '../lib/api';
 
@@ -9,6 +9,10 @@ export default function Header() {
   const [goldRate, setGoldRate] = useState<string | null>(null);
   const [silverRate, setSilverRate] = useState<string | null>(null);
   const [currentRateIndex, setCurrentRateIndex] = useState(0);
+
+  const location = useLocation();
+  const isSilver = location.pathname.includes('/category/silver');
+  const isGold = !isSilver;
 
   useEffect(() => {
     async function fetchRate() {
@@ -156,10 +160,10 @@ export default function Header() {
     <div className="bg-white border-b border-outline-variant/30 py-2 relative z-40">
       <div className="max-w-container-max mx-auto px-gutter flex justify-center">
         <div className="flex w-full md:w-[600px] rounded-full border border-primary/40 p-1">
-           <Link to="/category/silver" className="flex-1 text-center px-4 py-2 md:py-2.5 rounded-full text-sm md:text-base font-medium transition-colors bg-[#A32A4C] text-white">
+           <Link to="/category/silver" className={`flex-1 text-center px-4 py-2 md:py-2.5 rounded-full text-sm md:text-base font-medium transition-colors ${isSilver ? 'bg-[#A32A4C] text-white' : 'text-on-surface hover:bg-[#A32A4C]/10'}`}>
               Silver Jewellery
            </Link>
-           <Link to="/category/gold" className="flex-1 text-center px-4 py-2 md:py-2.5 rounded-full text-sm md:text-base font-medium transition-colors text-on-surface hover:bg-[#E5D38A]/20">
+           <Link to="/category/gold" className={`flex-1 text-center px-4 py-2 md:py-2.5 rounded-full text-sm md:text-base font-medium transition-colors ${isGold ? 'bg-[#E5D38A] text-[#111111]' : 'text-on-surface hover:bg-[#E5D38A]/20'}`}>
               Gold Jewellery
            </Link>
         </div>
