@@ -94,8 +94,8 @@ https://pareva-production.up.railway.app/
 ### Clone Repository
 
 ```bash
-git clone https://github.com/your-username/shree-pareva-jewellers.git
-cd shree-pareva-jewellers
+git clone https://github.com/Ayush-git-m/Pareva.git
+cd Pareva
 ```
 
 ### Install Dependencies
