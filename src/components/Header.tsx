@@ -44,8 +44,9 @@ export default function Header() {
   };
 
   return (
-    <nav className="sticky top-0 z-50 glass-nav border-b border-outline-variant/30">
-      <div className="max-w-container-max mx-auto px-gutter py-4 flex justify-between items-center">
+    <>
+      <nav className="sticky top-0 z-50 glass-nav border-b border-outline-variant/30 bg-white shadow-sm">
+        <div className="max-w-container-max mx-auto px-gutter py-4 flex justify-between items-center">
         <div className="flex items-center justify-between w-full md:w-auto md:gap-8">
           <Link
             className="transition-transform duration-300 hover:scale-105"
@@ -150,6 +151,20 @@ export default function Header() {
         </div>
       )}
     </nav>
+    
+    {/* Sub Navigation Bar */}
+    <div className="bg-white border-b border-outline-variant/30 py-2 relative z-40">
+      <div className="max-w-container-max mx-auto px-gutter flex justify-center">
+        <div className="flex w-full md:w-[600px] rounded-full border border-primary/40 p-1">
+           <Link to="/category/silver" className="flex-1 text-center px-4 py-2 md:py-2.5 rounded-full text-sm md:text-base font-medium transition-colors bg-[#A32A4C] text-white">
+              Silver Jewellery
+           </Link>
+           <Link to="/category/gold" className="flex-1 text-center px-4 py-2 md:py-2.5 rounded-full text-sm md:text-base font-medium transition-colors text-on-surface hover:bg-[#E5D38A]/20">
+              Gold Jewellery
+           </Link>
+        </div>
+      </div>
+    </div>
+  </>
   );
 }
-
