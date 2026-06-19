@@ -4,7 +4,8 @@ A modern full-stack jewellery showroom website built for showcasing premium gold
 
 ## Live Demo
 
-https://pareva-production.up.railway.app/admin
+https://pareva-production.up.railway.app/
+
 
 ---
 
