@@ -323,7 +323,7 @@ export default function GenderPage() {
               {selectedItem.description && (
                 <div className="flex-1">
                   <h4 className="text-label-lg font-medium text-on-surface-variant mb-2">Description</h4>
-                  <p className="text-body-lg text-on-surface leading-relaxed">{selectedItem.description}</p>
+                  <p className="whitespace-pre-line text-body-lg text-on-surface leading-relaxed">{selectedItem.description}</p>
                 </div>
               )}
             </div>
