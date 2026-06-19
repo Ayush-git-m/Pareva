@@ -12,6 +12,7 @@ export default function App() {
       <ScrollToTop />
       <Routes>
         <Route path="/" element={<HomePage />} />
+        <Route path="/category/:metalType" element={<HomePage />} />
         <Route path="/collection/:id" element={<CollectionPage />} />
         <Route path="/gender/:type" element={<GenderPage />} />
         <Route path="/admin" element={<AdminPage />} />
