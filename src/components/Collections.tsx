@@ -4,14 +4,26 @@ import { api } from '../lib/api';
 import { Sparkles } from 'lucide-react';
 import { optimizeImage } from '../lib/image-utils';
 
-export default function Collections() {
+export default function Collections({ activeMetal = 'gold' }: { activeMetal?: string }) {
   const [categories, setCategories] = useState<any[]>([]);
 
   useEffect(() => {
     async function fetchCollections() {
       try {
         const fetched = await api.getCollections();
-        const mapped = fetched.map((c: any) => ({
+        
+        // Fetch products to filter collections by metal
+        const allJewelries = await api.getJewelries();
+        const filteredJewelries = allJewelries.filter((item: any) => item.metal === activeMetal);
+        const activeCollectionIds = new Set(filteredJewelries.map((j: any) => String(j.collectionId)));
+        
+        // Filter collections to only those containing products matching the active metal
+        const filteredCollections = fetched.filter((c: any) => activeCollectionIds.has(String(c.id)));
+        
+        // If no products match, fallback to showing all or handle appropriately
+        const collectionsToDisplay = filteredCollections.length > 0 ? filteredCollections : fetched;
+
+        const mapped = collectionsToDisplay.map((c: any) => ({
           ...c,
           image: c.imageUrl,
           icon: <Sparkles className="w-8 h-8 text-luxury-gold mx-auto mb-4" />
@@ -23,7 +35,7 @@ export default function Collections() {
       }
     }
     fetchCollections();
-  }, []);
+  }, [activeMetal]);
 
   return (
     <section id="collections" className="py-16 md:py-24 bg-surface relative overflow-hidden">
@@ -31,7 +43,7 @@ export default function Collections() {
       <div className="max-w-container-max mx-auto px-gutter relative z-10">
         <div className="text-center mb-16">
           <h2 className="text-headline-lg text-primary mb-2 font-headline-lg">
-            Our Collections
+            Our {activeMetal === 'silver' ? 'Silver' : 'Gold'} Collections
           </h2>
           <div className="filigree-divider"></div>
         </div>

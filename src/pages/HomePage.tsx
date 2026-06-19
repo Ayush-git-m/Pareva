@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useParams } from 'react-router-dom';
 import Header from '../components/Header';
 import Hero from '../components/Hero';
 import Features from '../components/Features';
@@ -11,14 +12,16 @@ import StoreInfo from '../components/StoreInfo';
 import Footer from '../components/Footer';
 
 export default function HomePage() {
-  const [activeCategory, setActiveCategory] = useState<'gold' | 'silver'>('gold');
+  const { metalType } = useParams<{ metalType?: string }>();
+  // default to gold when not specified
+  const activeMetal = metalType === 'silver' ? 'silver' : 'gold';
 
   return (
     <div className="min-h-screen">
       <Header />
       <Hero />
       <Features />
-      <Collections />
+      <Collections activeMetal={activeMetal} />
       <ShopByGender />
       <BridalHighlight />
       <InfoSection />
