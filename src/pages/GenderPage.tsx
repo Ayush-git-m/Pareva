@@ -4,6 +4,7 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { ArrowLeft, Loader2, ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { api } from '../lib/api';
+import { optimizeImage } from '../lib/image-utils';
 
 export default function GenderPage() {
   const { type } = useParams();
@@ -177,9 +178,10 @@ export default function GenderPage() {
                 <div key={coll.id} className={`flex flex-col md:flex-row gap-10 md:items-center ${idx % 2 !== 0 ? 'md:flex-row-reverse' : ''}`}>
                   <div className="md:w-1/2 aspect-[4/3] rounded-2xl overflow-hidden luxury-shadow bg-surface-container flex items-center justify-center p-6">
                     <img
-                      src={coll.imageUrl}
+                      src={optimizeImage(coll.imageUrl, 800)}
                       alt={coll.title}
                       className="w-full h-full object-contain mix-blend-multiply"
+                      loading="lazy"
                     />
                   </div>
                   <div className="md:w-1/2">
@@ -213,9 +215,10 @@ export default function GenderPage() {
                 >
                   <div className="relative aspect-square overflow-hidden bg-surface-container border-b border-outline-variant/30 flex items-center justify-center p-4">
                     <img 
-                      src={item.imageUrl} 
+                      src={optimizeImage(item.imageUrl, 500)} 
                       alt={item.title} 
                       className="w-full h-full object-contain mix-blend-multiply transition-transform duration-700 group-hover:scale-105"
+                      loading="lazy"
                     />
                     <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/5 transition-colors duration-300 pointer-events-none"></div>
                   </div>
@@ -272,7 +275,7 @@ export default function GenderPage() {
               )}
               
               <img 
-                src={getImages(selectedItem)[currentImageIndex]} 
+                src={optimizeImage(getImages(selectedItem)[currentImageIndex], 1200)} 
                 alt={selectedItem.title}
                 className="max-w-full max-h-full object-contain p-4"
               />

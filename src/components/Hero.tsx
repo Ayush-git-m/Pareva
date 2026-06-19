@@ -6,6 +6,7 @@ import { Autoplay, EffectFade, Pagination } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/effect-fade';
 import 'swiper/css/pagination';
+import { optimizeImage } from '../lib/image-utils';
 
 export default function Hero() {
   const [banners, setBanners] = useState<any[]>([]);
@@ -65,7 +66,7 @@ export default function Hero() {
                   <img
                     className="w-full h-auto block mx-auto"
                     alt={banner.title || "Luxury Jewellery"}
-                    src={banner.imageUrl}
+                    src={optimizeImage(banner.imageUrl, 1600)}
                     fetchPriority="high"
                   />
                 </div>
@@ -103,3 +104,4 @@ export default function Hero() {
     </header>
   );
 }
+

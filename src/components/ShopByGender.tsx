@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { optimizeImage } from '../lib/image-utils';
 
 export default function ShopByGender() {
   return (
@@ -18,9 +19,10 @@ export default function ShopByGender() {
             className="group relative overflow-hidden rounded-2xl luxury-shadow cursor-pointer block"
           >
             <img 
-              src="/images/Forhm.png" 
+              src={optimizeImage("/images/Forhm.png", 800)} 
               alt="Shop For Him" 
               className="w-full h-auto object-contain transition-transform duration-700 group-hover:scale-105"
+              loading="lazy"
             />
             <div className="absolute inset-0 flex flex-col justify-end items-center pb-8 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
               <span className="inline-flex items-center justify-center bg-primary text-white px-8 py-3 rounded-full text-sm font-medium shadow-lg">
@@ -35,9 +37,10 @@ export default function ShopByGender() {
             className="group relative overflow-hidden rounded-2xl luxury-shadow cursor-pointer block"
           >
             <img 
-              src="/images/Forher.png" 
+              src={optimizeImage("/images/Forher.png", 800)} 
               alt="Shop For Her" 
               className="w-full h-auto object-contain transition-transform duration-700 group-hover:scale-105"
+              loading="lazy"
             />
             <div className="absolute inset-0 flex flex-col justify-end items-center pb-8 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
               <span className="inline-flex items-center justify-center bg-primary text-white px-8 py-3 rounded-full text-sm font-medium shadow-lg">

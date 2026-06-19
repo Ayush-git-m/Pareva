@@ -4,6 +4,7 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { ArrowLeft, Loader2, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { api } from '../lib/api';
+import { optimizeImage } from '../lib/image-utils';
 
 export default function CollectionPage() {
   const { id } = useParams();
@@ -143,7 +144,8 @@ export default function CollectionPage() {
           <img
             className="w-full h-full object-cover opacity-60 mix-blend-overlay"
             alt={collectionData.title}
-            src={collectionData.image}
+            src={optimizeImage(collectionData.image, 1200)}
+            fetchPriority="high"
           />
           <div className="absolute inset-0 bg-black/40"></div>
         </div>
@@ -165,9 +167,10 @@ export default function CollectionPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-16 items-center">
             <div className="rounded-2xl overflow-hidden luxury-shadow bg-[#1a0508]">
               <img
-                src={collectionData.image}
+                src={optimizeImage(collectionData.image, 800)}
                 alt={collectionData.title}
                 className="w-full h-full sm:h-auto object-contain sm:object-cover aspect-[4/5]"
+                loading="lazy"
               />
             </div>
             <div>
@@ -217,9 +220,10 @@ export default function CollectionPage() {
                 <div key={item.id} onClick={() => openImageModal(item)} className="bg-white rounded-2xl luxury-shadow overflow-hidden group cursor-pointer">
                   <div className="relative aspect-square overflow-hidden bg-surface-container border-b border-outline-variant/30 flex items-center justify-center p-4">
                     <img 
-                      src={item.imageUrl} 
+                      src={optimizeImage(item.imageUrl, 500)} 
                       alt={item.title} 
                       className="w-full h-full object-contain mix-blend-multiply transition-transform duration-700 group-hover:scale-105"
+                      loading="lazy"
                     />
                     {getImages(item).length > 1 && (
                       <div className="absolute bottom-2 right-2 bg-black/60 text-white text-xs px-2 py-1 rounded-full backdrop-blur-sm">
@@ -281,7 +285,7 @@ export default function CollectionPage() {
               )}
               
               <img 
-                src={getImages(selectedItem)[currentImageIndex]} 
+                src={optimizeImage(getImages(selectedItem)[currentImageIndex], 1200)} 
                 alt={selectedItem.title}
                 className="max-w-full max-h-full object-contain p-4"
               />
@@ -339,3 +343,4 @@ export default function CollectionPage() {
     </div>
   );
 }
+

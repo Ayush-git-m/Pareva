@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { api } from '../lib/api';
 import { Sparkles } from 'lucide-react';
+import { optimizeImage } from '../lib/image-utils';
 
 export default function Collections() {
   const [categories, setCategories] = useState<any[]>([]);
@@ -45,7 +46,8 @@ export default function Collections() {
               <img
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                 alt={item.title}
-                src={item.image}
+                src={optimizeImage(item.image, 600)}
+                loading="lazy"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60 transition-opacity group-hover:opacity-80"></div>
               <div className="absolute bottom-0 left-0 right-0 p-8 text-center translate-y-4 transition-transform duration-500 group-hover:translate-y-0">
