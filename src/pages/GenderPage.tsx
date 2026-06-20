@@ -110,11 +110,13 @@ export default function GenderPage() {
 
         const allJewelries = await api.getJewelries();
         const selectedJewelries = allJewelries.filter((j: any) => {
-          const inCollection = collectionIds.includes(String(j.collectionId));
-          if (!inCollection) return false;
+          if (!collectionIds.includes(String(j.collectionId))) return false;
           
-          if (j.gender && j.gender !== 'none' && j.gender !== 'unisex' && j.gender !== type) {
-            return false;
+          const itemGender = j.gender || 'none';
+          if (type === 'him') {
+            return itemGender !== 'her';
+          } else if (type === 'her') {
+            return itemGender !== 'him';
           }
           return true;
         });
