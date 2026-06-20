@@ -75,6 +75,7 @@ export const api = {
     headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${await getToken()}` },
     body: JSON.stringify(data)
   });
+  if (!res.ok) throw new Error('Failed to update jewellery');
   return res.json();
 },
 
@@ -84,6 +85,7 @@ export const api = {
     headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${await getToken()}` },
     body: JSON.stringify(data)
   });
+  if (!res.ok) throw new Error('Failed to update category');
   return res.json();
 },
     toggleBanner: async (id: number, enabled: boolean) => {
@@ -92,7 +94,9 @@ export const api = {
             headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${await getToken()}` },
             body: JSON.stringify({ enabled })
          });
-         return res.json();
+         const data = await res.json();
+         if (!res.ok) throw new Error(data.error || 'Failed to toggle banner');
+         return data;
     },
     reorderBanners: async (items: any[]) => {
          const res = await fetch(`/api/hero-banners/reorder`, {
@@ -100,7 +104,9 @@ export const api = {
              headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${await getToken()}` },
              body: JSON.stringify({ items })
          });
-         return res.json();
+         const data = await res.json();
+         if (!res.ok) throw new Error(data.error || 'Failed to reorder');
+         return data;
     },
     getSettings: async () => {
         try {
@@ -118,7 +124,9 @@ export const api = {
              headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${await getToken()}` },
              body: JSON.stringify({ settings })
          });
-         return res.json();
+         const data = await res.json();
+         if (!res.ok) throw new Error(data.error || 'Failed to update settings');
+         return data;
     }
 };
 
