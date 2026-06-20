@@ -64,7 +64,7 @@ export default function Hero() {
                 {/* Image Section - Responsive height */}
                 <div className="w-full relative flex justify-center items-center overflow-hidden">
                   <img
-                    className="w-full h-auto max-h-[50vh] md:max-h-[60vh] object-contain block mx-auto"
+                    className="w-full h-auto block"
                     alt={banner.title || "Luxury Jewellery"}
                     src={optimizeImage(banner.imageUrl, 1600)}
                     fetchPriority="high"
