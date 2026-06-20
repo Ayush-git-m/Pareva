@@ -117,7 +117,7 @@ export default function SearchBar() {
                         {filteredCollections.slice(0, 5).map(c => (
                           <Link 
                             key={`col-${c.id}`} 
-                            to={`/collections/${c.id}`}
+                            to={`/collection/${c.id}`}
                             className="px-4 py-3 hover:bg-surface-container transition-colors flex items-center gap-3"
                             onClick={() => setIsOpen(false)}
                           >
@@ -144,7 +144,7 @@ export default function SearchBar() {
                           return (
                             <Link 
                               key={`jew-${j.id}`} 
-                              to={`/collections/${j.collectionId}`}
+                              to={`/product/${j.id}`}
                               className="px-4 py-3 hover:bg-surface-container transition-colors flex items-center gap-3"
                               onClick={() => setIsOpen(false)}
                             >
