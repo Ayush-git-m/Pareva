@@ -12,18 +12,10 @@ export default function Collections({ activeMetal = 'gold' }: { activeMetal?: st
       try {
         const fetched = await api.getCollections();
         
-        // Fetch products to filter collections by metal
-        const allJewelries = await api.getJewelries();
-        const filteredJewelries = allJewelries.filter((item: any) => item.metal === activeMetal);
-        const activeCollectionIds = new Set(filteredJewelries.map((j: any) => String(j.collectionId)));
+        // Filter categories based on their metal property directly
+        const filteredCollections = fetched.filter((c: any) => (c.metal || 'gold') === activeMetal);
         
-        // Filter collections to only those containing products matching the active metal
-        const filteredCollections = fetched.filter((c: any) => activeCollectionIds.has(String(c.id)));
-        
-        // If no products match, fallback to showing all or handle appropriately
-        const collectionsToDisplay = filteredCollections.length > 0 ? filteredCollections : fetched;
-
-        const mapped = collectionsToDisplay.map((c: any) => ({
+        const mapped = filteredCollections.map((c: any) => ({
           ...c,
           image: c.imageUrl,
           icon: <Sparkles className="w-8 h-8 text-luxury-gold mx-auto mb-4" />
