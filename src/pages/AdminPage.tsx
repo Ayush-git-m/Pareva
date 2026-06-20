@@ -1515,44 +1515,66 @@ const handleSaveEdit = async () => {
                         </div>
                       </div>
                       
-                      <div className="mb-6 grid grid-cols-2 gap-4">
+                      <div className="mb-6 grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                           <label className="block text-label-md font-medium text-on-surface mb-2">
                             "For Him" Collections
                           </label>
-                          <select
-                            multiple
-                            className="w-full border border-outline bg-transparent py-2 px-3 rounded-lg text-on-surface focus:border-primary focus:outline-none transition-colors h-32"
-                            value={Array.isArray(forHimCollectionIds) ? forHimCollectionIds : []}
-                            onChange={(e) => {
-                              const options = Array.from(e.target.selectedOptions);
-                              setForHimCollectionIds(options.map(o => o.value));
-                            }}
-                          >
+                          <div className="w-full border border-outline bg-transparent rounded-lg text-on-surface h-48 overflow-y-auto p-2 space-y-1">
                             {categories.map((c: any) => (
-                              <option key={c.id} value={c.id}>{c.title}</option>
+                              <label key={c.id} className="flex items-center gap-3 p-2 hover:bg-surface-container rounded-md cursor-pointer transition-colors">
+                                <input
+                                  type="checkbox"
+                                  checked={Array.isArray(forHimCollectionIds) && forHimCollectionIds.includes(String(c.id))}
+                                  onChange={(e) => {
+                                    if (e.target.checked) {
+                                      setForHimCollectionIds(prev => [...(Array.isArray(prev) ? prev : []), String(c.id)]);
+                                    } else {
+                                      setForHimCollectionIds(prev => (Array.isArray(prev) ? prev.filter(id => id !== String(c.id)) : []));
+                                    }
+                                  }}
+                                  className="w-4 h-4 text-primary bg-surface border-outline rounded focus:ring-primary"
+                                />
+                                <span className="text-body-md select-none flex-1">{c.title}</span>
+                                {Array.isArray(forHimCollectionIds) && forHimCollectionIds.includes(String(c.id)) && (
+                                   <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full font-medium">
+                                     #{forHimCollectionIds.indexOf(String(c.id)) + 1}
+                                   </span>
+                                )}
+                              </label>
                             ))}
-                          </select>
-                          <p className="text-xs text-on-surface-variant mt-1">Hold Ctrl/Cmd to select multiple. Order clicked matters.</p>
+                          </div>
+                          <p className="text-xs text-on-surface-variant mt-2">Check to select. Order clicked matters.</p>
                         </div>
                         <div>
                           <label className="block text-label-md font-medium text-on-surface mb-2">
                             "For Her" Collections
                           </label>
-                          <select
-                            multiple
-                            className="w-full border border-outline bg-transparent py-2 px-3 rounded-lg text-on-surface focus:border-primary focus:outline-none transition-colors h-32"
-                            value={Array.isArray(forHerCollectionIds) ? forHerCollectionIds : []}
-                            onChange={(e) => {
-                              const options = Array.from(e.target.selectedOptions);
-                              setForHerCollectionIds(options.map(o => o.value));
-                            }}
-                          >
+                          <div className="w-full border border-outline bg-transparent rounded-lg text-on-surface h-48 overflow-y-auto p-2 space-y-1">
                             {categories.map((c: any) => (
-                              <option key={c.id} value={c.id}>{c.title}</option>
+                              <label key={c.id} className="flex items-center gap-3 p-2 hover:bg-surface-container rounded-md cursor-pointer transition-colors">
+                                <input
+                                  type="checkbox"
+                                  checked={Array.isArray(forHerCollectionIds) && forHerCollectionIds.includes(String(c.id))}
+                                  onChange={(e) => {
+                                    if (e.target.checked) {
+                                      setForHerCollectionIds(prev => [...(Array.isArray(prev) ? prev : []), String(c.id)]);
+                                    } else {
+                                      setForHerCollectionIds(prev => (Array.isArray(prev) ? prev.filter(id => id !== String(c.id)) : []));
+                                    }
+                                  }}
+                                  className="w-4 h-4 text-primary bg-surface border-outline rounded focus:ring-primary"
+                                />
+                                <span className="text-body-md select-none flex-1">{c.title}</span>
+                                {Array.isArray(forHerCollectionIds) && forHerCollectionIds.includes(String(c.id)) && (
+                                   <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full font-medium">
+                                     #{forHerCollectionIds.indexOf(String(c.id)) + 1}
+                                   </span>
+                                )}
+                              </label>
                             ))}
-                          </select>
-                          <p className="text-xs text-on-surface-variant mt-1">Hold Ctrl/Cmd to select multiple. Order clicked matters.</p>
+                          </div>
+                          <p className="text-xs text-on-surface-variant mt-2">Check to select. Order clicked matters.</p>
                         </div>
                       </div>
 
