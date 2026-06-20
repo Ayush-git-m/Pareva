@@ -158,9 +158,9 @@ async function startServer() {
       return;
     }
     const { id } = req.params;
-    const { title, description, imageUrl } = req.body;
+    const { title, description, imageUrl, metal } = req.body;
     const result = await db.update(collections)
-      .set({ title, description, imageUrl })
+      .set({ title, description, imageUrl, metal })
       .where(eq(collections.id, parseInt(id)))
       .returning();
     res.json(result[0]);
