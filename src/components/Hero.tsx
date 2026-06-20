@@ -69,6 +69,13 @@ export default function Hero() {
                     src={optimizeImage(banner.imageUrl, 1600)}
                     fetchPriority="high"
                   />
+                  {/* Invisible split links for left (Silver) and right (Gold) areas */}
+                  {(!banner.buttonLink || banner.buttonLink === '') && (
+                    <>
+                      <Link to="/metal/silver" className="absolute top-0 left-0 w-1/2 h-full z-10 cursor-pointer" aria-label="Shop Silver Jewellery" title="Shop Silver Jewellery" />
+                      <Link to="/metal/gold" className="absolute top-0 right-0 w-1/2 h-full z-10 cursor-pointer" aria-label="Shop Gold Jewellery" title="Shop Gold Jewellery" />
+                    </>
+                  )}
                 </div>
 
                 {/* Content Section - Always below to prevent overlapping baked-in text */}
