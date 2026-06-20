@@ -103,6 +103,7 @@ const [editGender, setEditGender] = useState<'none' | 'him' | 'her' | 'unisex'>(
   const [catImagePreview, setCatImagePreview] = useState('');
   const [catImageFile, setCatImageFile] = useState<File | null>(null);
   const [catGenderAssignment, setCatGenderAssignment] = useState<'none' | 'him' | 'her'>('none');
+  const [catMetal, setCatMetal] = useState('gold');
 
   // Banner State
   const [bannerTitle, setBannerTitle] = useState('');
@@ -481,6 +482,7 @@ const handleSaveEdit = async () => {
         title: catTitle,
         description: catDescription,
         imageUrl: finalImageUrl,
+        metal: catMetal,
       };
       const createdCategory = await api.addCollection(newCategory);
       
@@ -503,6 +505,7 @@ const handleSaveEdit = async () => {
       setCatImagePreview('');
       setCatImageFile(null);
       setCatGenderAssignment('none');
+      setCatMetal('gold');
       
       setSuccessMsg('Category uploaded and added successfully.');
       setTimeout(() => setSuccessMsg(''), 4000);
@@ -886,7 +889,7 @@ const handleSaveEdit = async () => {
             {activeTab === 'jewelries' && (
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
                 <div className="lg:col-span-1">
-                  <div className="bg-white p-6 rounded-2xl luxury-shadow sticky top-24">
+                  <div className="bg-white p-6 rounded-2xl luxury-shadow sticky top-24 max-h-[calc(100vh-6rem)] overflow-y-auto">
                     <h2 className="text-title-lg text-primary mb-6">Add New jewellery</h2>
                     <form onSubmit={handleaddJewellery} className="space-y-4">
                       <div>
@@ -1116,7 +1119,7 @@ const handleSaveEdit = async () => {
             {activeTab === 'categories' && (
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
                 <div className="lg:col-span-1">
-                  <div className="bg-white p-6 rounded-2xl luxury-shadow sticky top-24">
+                  <div className="bg-white p-6 rounded-2xl luxury-shadow sticky top-24 max-h-[calc(100vh-6rem)] overflow-y-auto">
                     <h2 className="text-title-lg text-primary mb-6">Add New Category</h2>
                     <form onSubmit={handleAddCategory} className="space-y-4">
                       <div>
@@ -1166,6 +1169,20 @@ const handleSaveEdit = async () => {
                             <span className="text-body-sm text-primary">Click to select image (Max 10MB)</span>
                           </label>
                         </div>
+                      </div>
+                      
+                      <div>
+                        <label className="block text-body-sm font-medium text-on-surface mb-1">Metal</label>
+                        <select
+                           value={catMetal}
+                           onChange={(e) => setCatMetal(e.target.value)}
+                           className="w-full px-4 py-2 border border-outline-variant/50 rounded-lg focus:outline-none focus:border-primary"
+                        >
+                           <option value="gold">Gold</option>
+                           <option value="silver">Silver</option>
+                           <option value="platinum">Platinum</option>
+                           <option value="diamond">Diamond</option>
+                        </select>
                       </div>
                       
                       <div>
@@ -1249,7 +1266,7 @@ const handleSaveEdit = async () => {
             {activeTab === 'banners' && (
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
                 <div className="lg:col-span-1">
-                  <div className="bg-white p-6 rounded-2xl luxury-shadow sticky top-24">
+                  <div className="bg-white p-6 rounded-2xl luxury-shadow sticky top-24 max-h-[calc(100vh-6rem)] overflow-y-auto">
                     <h2 className="text-title-lg text-primary mb-6">Add Hero Banner</h2>
                     <form onSubmit={handleAddBanner} className="space-y-4">
                       <div>

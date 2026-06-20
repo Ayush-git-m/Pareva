@@ -7,6 +7,7 @@ export const collections = pgTable('collections', {
   title: text('title').notNull(),
   description: text('description').notNull(),
   imageUrl: text('image_url').notNull(),
+  metal: text('metal'),
   createdAt: timestamp('created_at').defaultNow(),
 });
 

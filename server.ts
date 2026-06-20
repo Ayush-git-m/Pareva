@@ -91,8 +91,8 @@ async function startServer() {
          return;
       }
       
-      const { title, description, imageUrl, firebaseId } = req.body;
-      const result = await db.insert(collections).values({ title, description, imageUrl, firebaseId }).returning();
+      const { title, description, imageUrl, firebaseId, metal } = req.body;
+      const result = await db.insert(collections).values({ title, description, imageUrl, firebaseId, metal }).returning();
       res.json(result[0]);
     } catch (error) {
       console.error("DB error:", error);
