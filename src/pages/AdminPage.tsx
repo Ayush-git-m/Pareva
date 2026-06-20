@@ -611,7 +611,7 @@ const handleSaveEdit = async () => {
   const confirmDelete = async () => {
     if (!itemToDelete) return;
     try {
-      await api.deleteItem(itemToDelete.type, itemToDelete.id);
+      await api.deleteItem(itemToDelete.type,Number(itemToDelete.id));
       await fetchData();
       setItemToDelete(null);
     } catch (err: any) {
