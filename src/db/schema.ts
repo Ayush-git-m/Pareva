@@ -26,6 +26,7 @@ export const jewelries = pgTable('jewelries', {
   weight: text('weight'), // Optional weight (e.g. "10g")
   carat: text('carat'), // Optional carat (e.g. "22k")
   gender: text('gender'), // Gender segment
+  metal: text('metal'), // Metal segment
   createdAt: timestamp('created_at').defaultNow(),
 });
 
