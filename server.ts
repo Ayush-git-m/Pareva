@@ -108,9 +108,9 @@ async function startServer() {
          return;
       }
 
-      const { title, description, collectionId, imageUrl, imageUrls, price, firebaseId, weight, carat, gender } = req.body;
+      const { title, description, collectionId, imageUrl, imageUrls, price, firebaseId, weight, carat, gender, metal } = req.body;
       const finalGender = gender === null ? 'none' : (gender || 'none');
-      const result = await db.insert(jewelries).values({ title, description, collectionId, imageUrl, imageUrls, price, firebaseId, weight, carat, gender: finalGender } as any).returning();
+      const result = await db.insert(jewelries).values({ title, description, collectionId, imageUrl, imageUrls, price, firebaseId, weight, carat, metal, gender: finalGender } as any).returning();
       res.json(result[0]);
     } catch (error) {
       console.error("DB error:", error);
@@ -195,10 +195,10 @@ async function startServer() {
       return;
     }
     const { id } = req.params;
-    const { title, description, collectionId, imageUrl, imageUrls, price, weight, carat, gender } = req.body;
+    const { title, description, collectionId, imageUrl, imageUrls, price, weight, carat, gender, metal } = req.body;
     const finalGender = gender === null ? 'none' : (gender || 'none');
     const result = await db.update(jewelries)
-      .set({ title, description, collectionId, imageUrl, imageUrls, price, weight, carat, gender: finalGender } as any)
+      .set({ title, description, collectionId, imageUrl, imageUrls, price, weight, carat, metal, gender: finalGender } as any)
       .where(eq(jewelries.id, parseInt(id)))
       .returning();
     res.json(result[0]);
