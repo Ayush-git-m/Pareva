@@ -269,6 +269,8 @@ const [editGender, setEditGender] = useState<'none' | 'him' | 'her' | 'unisex'>(
     setEditMetal(item.metal || 'gold');
     setEditCollectionId(item.collectionId ? String(item.collectionId) : '');
     setEditGender(item.gender || 'none');
+  } else if (type === 'category') {
+    setEditMetal(item.metal || 'gold');
   }
 };
 
@@ -314,6 +316,7 @@ const handleSaveEdit = async () => {
         title: editTitle,
         description: editDescription,
         imageUrl: finalImageUrl,
+        metal: editMetal,
       });
     }
 
@@ -712,6 +715,20 @@ const handleSaveEdit = async () => {
           />
         </div>
 
+        <div>
+          <label className="block text-body-sm font-medium text-on-surface mb-1">Metal</label>
+          <select
+            value={editMetal}
+            onChange={(e) => setEditMetal(e.target.value)}
+            className="w-full px-4 py-2 border border-outline-variant/50 rounded-lg focus:outline-none focus:border-primary"
+          >
+            <option value="gold">Gold</option>
+            <option value="silver">Silver</option>
+            <option value="platinum">Platinum</option>
+            <option value="diamond">Diamond</option>
+          </select>
+        </div>
+
         {editType === 'jewellery' && (
           <>
             <div>
@@ -757,20 +774,7 @@ const handleSaveEdit = async () => {
                 />
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-body-sm font-medium text-on-surface mb-1">Metal</label>
-                <select
-                  value={editMetal}
-                  onChange={(e) => setEditMetal(e.target.value)}
-                  className="w-full px-4 py-2 border border-outline-variant/50 rounded-lg focus:outline-none focus:border-primary"
-                >
-                  <option value="gold">Gold</option>
-                  <option value="silver">Silver</option>
-                  <option value="platinum">Platinum</option>
-                  <option value="diamond">Diamond</option>
-                </select>
-              </div>
+            <div className="grid grid-cols-1 gap-4">
               <div>
                 <label className="block text-body-sm font-medium text-on-surface mb-1">Gender Category</label>
                 <select
