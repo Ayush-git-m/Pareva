@@ -1,6 +1,7 @@
 import { auth } from '../firebase';
 
-const API = "https://pareva-backend.onrender.com";
+const API = "https://api.shreeparevajewellers.com";
+
 
 const getToken = async () => {
     if (!auth.currentUser) return '';
