@@ -5,10 +5,21 @@ import { db } from "./src/db/index.js";
 import { collections, jewelries, heroBanners, settings } from "./src/db/schema.js";
 import { eq, desc } from "drizzle-orm";
 import { requireAuth, AuthRequest } from "./src/middleware/auth.js";
+import cors from "cors";
 
 async function startServer() {
   const app = express();
   const PORT = 3000;
+  app.use(
+  cors({
+    origin: [
+      "https://pareva-a6ap.vercel.app",
+      "https://shreeparevajewellers.com",
+      "https://www.shreeparevajewellers.com",
+    ],
+    credentials: true,
+  })
+);
 
   app.use(express.json({ limit: '50mb' }));
   app.use(express.urlencoded({ limit: '50mb', extended: true }));
