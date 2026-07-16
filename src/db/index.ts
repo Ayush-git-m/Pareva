@@ -2,17 +2,19 @@ import { drizzle } from 'drizzle-orm/node-postgres';
 import pg from 'pg';
 import * as schema from './schema.js';
 
-const pool = new pg.Pool({
-  host: process.env.SQL_HOST,
-  port: process.env.SQL_PORT ? parseInt(process.env.SQL_PORT) : 5432,
-  user: process.env.SQL_USER,
-  password: process.env.SQL_PASSWORD,
-  database: process.env.SQL_DB_NAME,
-  ssl: {
-    rejectUnauthorized: false,
-  },
-  connectionTimeoutMillis: 15000,
-});
+export const createPool = () => {
+  return new pg.Pool({
+    host: process.env.SQL_HOST,
+    port: process.env.SQL_PORT ? parseInt(process.env.SQL_PORT) : 5432,
+    user: process.env.SQL_USER,
+    password: process.env.SQL_PASSWORD,
+    database: process.env.SQL_DB_NAME,
+    ssl: {
+      rejectUnauthorized: false,
+    },
+    connectionTimeoutMillis: 15000,
+  });
+};
 
 const pool = createPool();
 
